@@ -16,8 +16,6 @@ TEMPLATE     = app
 QT	    += widgets
 INCLUDEPATH += . lib lib/dsbcfg lib/libdsbmc lib/qt-helper src 
 DEFINES     += PROGRAM=\\\"$${PROGRAM}\\\" LOCALE_PATH=\\\"$${DATADIR}\\\"
-DEFINES	    += PATH_FEH=\\\"$${PATH_FEH}\\\"
-DEFINES	    += PATH_BGLIST=\\\"$${PATH_BGLIST}\\\"
 QMAKE_POST_LINK = $(STRIP) $(TARGET)
 QMAKE_EXTRA_TARGETS += distclean cleanqm
 
