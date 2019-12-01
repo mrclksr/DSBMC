@@ -1,0 +1,307 @@
+.Dd $Mdocdate$
+.Dt LIBDSBMC 3
+.Sh NAME
+.Nm libdsbmc
+.Nd "Client library for DSBMD"
+.Sh SYNOPSIS
+.In libdsbmc.h
+.Ft int
+.Fn dsbmc_fetch_event "dsbmc_t *handle" "dsbmc_event_t *ev"
+.Ft int
+.Fn dsbmc_get_devlist "dsbmc_t *handle" "const dsbmc_dev_t ***list"
+.Ft int
+.Fn dsbmc_mount "dsbmc_t *handle" "const dsbmc_dev_t *d"
+.Ft int
+.Fn dsbmc_unmount "dsbmc_t *handle" "const dsbmc_dev_t *d" "bool force"
+.Ft int
+.Fn dsbmc_eject "dsbmc_t *handle" "const dsbmc_dev_t *d" "bool force"
+.Ft int
+.Fn dsbmc_set_speed "dsbmc_t *handle" "const dsbmc_dev_t *d" "int speed"
+.Ft int
+.Fn dsbmc_size "dsbmc_t *handle" "const dsbmc_dev_t *d"
+.Ft int
+.Fn dsbmc_mdattach "dsbmc_t *handle" "const char *image"
+.Ft int
+.Fn dsbmc_set_speed_async "dsbmc_t *handle" "const dsbmc_dev_t *d" "int speed" "void (*cb)(int, const dsbmc_dev_t *)"
+.Ft int
+.Fn dsbmc_mount_async "dsbmc_t *handle" "const dsbmc_dev_t *d" "void (*cb)(int, const dsbmc_dev_t *)"
+.Ft int
+.Fn dsbmc_unmount_async "dsbmc_t *handle" "const dsbmc_dev_t *d" "bool force" "void (*cb)(int, const dsbmc_dev_t *)"
+.Ft int
+.Fn dsbmc_eject_async "dsbmc_t *handle" "const dsbmc_dev_t *d" "bool force" "void (*cb)(int, const dsbmc_dev_t *)"
+.Ft int
+.Fn dsbmc_size_async "dsbmc_t *handle" "const dsbmc_dev_t *d" "void (*cb)(int, const dsbmc_dev_t *)"
+.Ft int
+.Fn dsbmc_mdattach_async "dsbmc_t *handle" "const char *image" "void (*cb)(int, const dsbmc_dev_t *)"
+.Ft int
+.Fn dsbmc_connect "dsbmc_t *handle"
+.Ft int
+.Fn dsbmc_get_fd "dsbmc_t *handle"
+.Ft int
+.Fn dsbmc_get_err "dsbmc_t *handle" "const char **buf"
+.Ft void
+.Fn dsbmc_disconnect "dsbmc_t *handle"
+.Ft void
+.Fn dsbmc_free_handle "dsbmc_t *handle"
+.Ft void
+.Fn dsbmc_free_dev "dsbmc_t *handle" "const dsbmc_dev_t *dev"
+.Ft "const char *"
+.Fn dsbmc_errstr "dsbmc_t *handle"
+.Ft "const char *"
+.Fn dsbmc_errcode_to_str "int code"
+.Ft dsbmc_t *
+.Fn dsbmc_alloc_handle "void"
+.Ft dsbmc_dev_t *
+.Fn dsbmc_dev_from_name "dsbmc_t *handle" "const char *name"
+.Ft dsbmc_dev_t *
+.Fn dsbmc_dev_from_id "dsbmc_t *handle" "int id"
+.Ft dsbmc_dev_t *
+.Fn dsbmc_next_dev "dsbmc_t *handle" "int *idx" "bool removed"
+.Sh DESCRIPTION
+Almost all functions operate on a handle of type
+.Vt "dsbmc_t".
+.Fn dsbmc_alloc_handle
+creates and initializes a handle, and returns a pointer to it. If an error
+occured, NULL is returned.
+.Pp
+.Fn dsbmc_connect
+establishes a connection to DSBMD, and returns 0 on success, and -1 if
+an error occured. If this function fails, DSBMC_ERR_CONN_DENIED is set in the
+error bitmask, or errno is set to any value defined in connect(2) and
+socket(2).
+.Pp
+The
+.Fn dsbmc_disconnect
+function terminates the connection to DSBMD.
+.Pp
+.Fn dsbmc_free_handle
+frees the memory used by the handle.
+.Pp
+The
+.Fn dsbmc_fetch_event
+function fetches the next available event, updates
+internal data structures, and executes callback functions. If an event is
+available,
+.Fn dsbmc_fetch_event
+returns a value > 0, else 0 is returned.
+If an error occured,
+.Fn dsbmc_fetch_event
+returns -1. Possible errors
+are
+.Dv DSBMC_ERR_LOST_CONNECTION , DSBMC_ERR_SYS
+and/or
+.Dv DSBMC_ERR_FATAL .
+Instead of CPU intensive polling,
+.Fn dsbmc_fetch_event
+can be used together
+with select() by passing the file descriptor retrieved by
+.Fn dsbmd_get_fd .
+.Pp
+The
+.Fn dsbmc_get_devlist
+fucntion sets the given pointer to the internal list
+of
+.Vt "dsbmc_dev_t *"
+objects. The number of objects is returned.
+.Pp
+The
+.Fn dsbmc_get_fd
+function returns the file descriptor of the socket which
+is connected to DSBMD. Its ONLY purpose is to use it with select().
+.Pp
+The
+.Fn dsbmc_mount
+function mounts the device represented by the given object.
+The function blocks until a reply from DSBMD is received or an error occured.
+On success
+.Fn dsbmc_mount
+returns 0. If mounting failed, an error code > 0
+is returned, which can be one of
+.Dv DSBMC_ERR_ALREADY_MOUNTED, DSBMC_ERR_NO_MEDIA DSBMC_ERR_PERMISSION_DENIED ,
+.Dv DSBMC_ERR_DEVICE_BUSY , DSBMC_ERR_NO_SUCH_DEVICE ,
+.Dv DSBMC_ERR_UNKNOWN_FILESYSTEM , DSBMC_ERR_UNKNOWN_ERROR ,
+.Dv DSBMC_ERR_MNTCMD_FAILED .
+If an error occured, -1 is returned, and the error bitmask is set accordingly.
+.Pp
+The
+.Fn dsbmc_unmount
+function unmounts the device represented by the given
+object. If 'force' is true, unmounting will be enforced even if the device is
+busy. The function blocks until a reply from DSBMD is received or an error
+occured. On success
+.Fn dsbmc_unmount
+returns 0. If unmounting failed, an error
+code > 0 is returned, which can be
+.Dv DSBMC_ERR_NOT_MOUNTED , DSBMC_ERR_DEVICE_BUSY ,
+or an errno number. If an error occured, -1 is returned,
+and the error bitmask is set accordingly.
+.Pp
+The
+.Fn dsbmc_eject
+function ejects the device represented by the given object.
+If 'force' is true, ejecting will be enforced even if the device is busy.
+The function blocks until a reply from DSBMD is received or an error occured.
+On success
+.Fn dsbmc_eject
+returns 0. If ejecting failed, an error code > 0
+is returned, which can be
+.Dv DSBMC_ERR_NOT_EJECTABLE , DSBMC_ERR_DEVICE_BUSY ,
+or an errno number. If an error occured, -1 is returned, and the error
+bitmask is set accordingly.
+.Pp
+The
+.Fn dsbmc_set_speed
+function sets the reading speed of the optical device
+represented by the given object. The function blocks until a reply from DSBMD
+is received or an error occured. On success
+.Fn dsbmc_set_speed
+returns 0. If it failed, an error code > 0 is returned, which can be
+.Dv ERR_INVALID_ARGUMENT ,
+or an errno number. If an error occured, -1 is returned, and the error
+bitmask is set accordingly.
+.Pp
+The
+.Fn dsbmc_size
+function queries the storage capacity, the number of used and
+free bytes of the device represented by the given object.
+.Pp
+The
+.Fn dsbmc_mdattach
+function asks DSBMD to create a memory disk to access the given disk image.
+The function blocks until a reply from DSBMD is received or an error occured.
+On success
+.Fn dsbmc_mdattach
+returns 0, else an error code > 0
+is returned, which can be
+.Dv DSBMC_ERR_NOT_A_FILE , DSBMC_ERR_PERMISSION_DENIED ,
+or an errno number. If an error occured, -1 is returned, and the error
+bitmask is set accordingly.
+.Pp
+The
+.Fn _async
+variant of
+.Fn dsbmc_mount ,
+.Fn dsbmc_unmount ,
+.Fn dsbmc_eject ,
+.Fn dsbmc_set_speed ,
+and
+.Fn dsbmc_mdattach
+return 0, and the given callback function will be executed by
+.Fn dsbmd_fetch_event
+as soon as a command-reply code is received. If an error occured, -1 is
+returned, and the error bitmask is set accordingly.
+.Pp
+If the
+.Dv DSBMC_EVENT_DEL_DEVICE
+event was received, the device object should be removed from the list using
+.Fn dsbmc_free_dev
+if it is no longer needed.
+.Pp
+If one of the functions failed with an error, the function
+.Fn dsbmc_get_err
+can be used to retrieve the error bitmask. If errstr is not
+.Dv NULL ,
+it is set to the corresponding error message.
+.Pp
+The function
+.Fn dsbmc_errstr
+returns the last error message.
+.Pp
+The
+.Fn dsbmc_errcode_to_str
+function translates a DSBMD error-code into a string.
+.Pp
+The
+.Fn dsbmc_dev_from_name
+function returns a pointer to the device object matching the given device name,
+or NULL if there was no match.
+.Pp
+The
+.Fn dsbmc_dev_from_id
+function returns a pointer to the device object matching the given ID,
+or NULL if there was no match.
+.Pp
+The
+.Fn dsbmc_next_dev
+function returns the next device from the device list, starting from
+.Ar *idx ,
+and increases the content of the given index pointer. If
+.Ar removed
+is false, removed devices are ignored. If the end of the list is reached, NULL
+is returned.
+.Sh THREADS
+.Nm libdsbmc
+can be used together with threads. However, access to a single handle from
+multiple threads must be synchronized, e.g. by using a mutex.
+.Sh OBJECTS
+Device object definition:
+.Bd -literal -offset indent
+typedef struct dsbmc_dev_s {
+	uint8_t cmds;			/* Supported commands. */
+#define DSBMC_CMD_MOUNT			(1 << 0x00)
+#define DSBMC_CMD_UNMOUNT		(1 << 0x01)
+#define DSBMC_CMD_EJECT			(1 << 0x02)
+#define DSBMC_CMD_PLAY			(1 << 0x03)
+#define DSBMC_CMD_OPEN			(1 << 0x04)
+#define DSBMC_CMD_SPEED			(1 << 0x05)
+#define DSBMC_CMD_SIZE			(1 << 0x06)
+#define DSBMC_CMD_MDATTACH		(1 << 0x07)
+	uint8_t type;
+#define DSBMC_DT_HDD			0x01
+#define DSBMC_DT_USBDISK		0x02
+#define DSBMC_DT_DATACD			0x03
+#define	DSBMC_DT_AUDIOCD		0x04
+#define	DSBMC_DT_RAWCD			0x05
+#define	DSBMC_DT_DVD			0x06
+#define	DSBMC_DT_VCD			0x07
+#define	DSBMC_DT_SVCD			0x08
+#define	DSBMC_DT_FLOPPY			0x09
+#define DSBMC_DT_MMC			0x0a
+#define DSBMC_DT_MTP			0x0b
+#define DSBMC_DT_PTP			0x0c
+	int	 id;			/* Unique ID */
+	char	 *dev;			/* Device name */
+	char	 *volid;		/* Volume ID */
+	char	 *mntpt;		/* Mount point */
+	char	 *fsname;		/* Filesystem name */
+	bool	 mounted;		/* Whether drive is mounted. */
+	bool	 removed;		/* Whether device was removed */
+	uint8_t	 speed;			/* CD/DVD reading speed */
+	uint64_t mediasize;		/* For "size" command. */
+	uint64_t free;			/* 	 ""	       */
+	uint64_t used;			/* 	 ""	       */
+} dsbmc_dev_t;
+.Ed
+.Pp
+Event object definition:
+.Bd -literal -offset indent
+typedef struct dsbmc_event_s {
+	int type;			/* Event type */
+	int code;			/* Error code */
+	dsbmc_dev_t *dev;		/* Device object */
+} dsbmc_event_t;
+.Ed
+.Sh ERROR CODES
+.Fn dsbmc_get_err
+returns the following error codes as bitmask:
+.Bl -tag -width Er
+.It Er DSBMC_ERR_SYS
+Syscall failed
+.It Er DSBMC_ERR_FATAL
+Fatal error. Continuing the program is probably not possible.
+.It Er DSBMC_ERR_LOST_CONNECTION
+Connection to DSBMD lost.
+.It Er DSBMC_ERR_CONN_DENIED
+The client has no permission to connect to DSBMD.
+.It Er DSBMC_ERR_INVALID_DEVICE
+A NULL pointer or a pointer to a removed device object was passed.
+.It Er DSBMC_ERR_CMDQ_BUSY
+The max. number of commands to be send asynchronously was exceeded.
+.It Er DSBMC_ERR_COMMAND_IN_PROGRESS
+An attempt was made to send a command while there are still commands
+in the command queue.
+.El
+.Pp
+Possible error codes of dsbmd events are:
+.Pp
+.Dv DSBMC_ERR_ALREADY_MOUNTED, DSBMC_ERR_PERMISSION_DENIED, DSBMC_ERR_NOT_MOUNTED , DSBMC_ERR_DEVICE_BUSY , DSBMC_ERR_NO_SUCH_DEVICE , DSBMC_ERR_MAX_CONN_REACHED , DSBMC_ERR_NOT_EJECTABLE , DSBMC_ERR_UNKNOWN_COMMAND , DSBMC_ERR_UNKNOWN_OPTION , DSBMC_ERR_SYNTAX_ERROR , DSBMC_ERR_NO_MEDIA , DSBMC_ERR_UNKNOWN_FILESYSTEM , DSBMC_ERR_UNKNOWN_ERROR , DSBMC_ERR_MNTCMD_FAILED, DSBMC_ERR_NOT_A_FILE
