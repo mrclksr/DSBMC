@@ -71,6 +71,7 @@ private:
 	void	 setIconSize(QSize size);
 	void	 saveGeometry(void);
 	void	 createTrayIcon(void);
+	void	 loadTrayIconPic(void);
 	QFrame	 *mkLine(void);
 	QString	 playCommand(const dsbmc_dev_t *dev);
 private slots:
@@ -89,6 +90,7 @@ private:
         int		*hHeight;
 	QIcon		quitIcon;
 	QIcon		prefsIcon; 
+	QIcon		trayIconPic;
 	Model		*model;
 	QMenu		*mainMenu;
 	QLabel		*statusLabel;

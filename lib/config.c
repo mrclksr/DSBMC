@@ -43,6 +43,7 @@ dsbcfg_vardef_t vardefs[] = {
   { "play_dvd",    DSBCFG_VAR_STRING,  CFG_PLAY_DVD,    DFLT_CMD_PLAY_DVD    },
   { "play_vcd",    DSBCFG_VAR_STRING,  CFG_PLAY_VCD,    DFLT_CMD_PLAY_VCD    },
   { "play_svcd",   DSBCFG_VAR_STRING,  CFG_PLAY_SVCD,   DFLT_CMD_PLAY_SVCD   },
+  { "tray_icon",   DSBCFG_VAR_STRING,  CFG_TRAY_ICON,   DSBCFG_VAL("")       },
   { "dvd_auto",    DSBCFG_VAR_BOOLEAN, CFG_DVD_AUTO,    DSBCFG_VAL(false)    },
   { "vcd_auto",    DSBCFG_VAR_BOOLEAN, CFG_VCD_AUTO,    DSBCFG_VAL(false)    },
   { "svcd_auto",   DSBCFG_VAR_BOOLEAN, CFG_SVCD_AUTO,   DSBCFG_VAL(false)    },

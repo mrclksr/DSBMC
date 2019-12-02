@@ -122,20 +122,33 @@ void MainWin::checkForSysTray()
 	}
 }
 
+void MainWin::loadTrayIconPic()
+{
+	char *fname = dsbcfg_getval(cfg, CFG_TRAY_ICON).string;
+
+	if (fname != NULL && *fname != '\0')
+		trayIconPic = QIcon(fname);
+	if (trayIconPic.isNull() || fname == NULL || *fname == '\0') {
+		trayIconPic = qh_loadIcon("drive-removable-media-usb-pendrive",
+					  "drive-removable-media-usb-panel",
+					  "drive-harddisk-usb-panel",
+					  "drive-removable-media-panel",
+					  "drive-harddisk-panel",
+					  "drive-removable-media-usb",
+					  "drive-harddisk-usb",
+					  "drive-removable-media",
+					  "drive-harddisk", 0);
+	}
+}
+
 void MainWin::createTrayIcon()
 {
 	if (trayIcon != 0)
 		return;
 	if (!QSystemTrayIcon::isSystemTrayAvailable())
 		return;
-	QIcon icon = qh_loadIcon("drive-removable-media-usb-panel",
-				   "drive-harddisk-usb-panel",
-				   "drive-removable-media-panel",
-				   "drive-harddisk-panel",
-				   "drive-removable-media-usb",
-				   "drive-harddisk-usb",
-				   "drive-removable-media",
-				   "drive-harddisk", 0);
+	loadTrayIconPic();
+
 	QMenu	*menu	     = new QMenu(this);
 	QAction *quitAction  = new QAction(quitIcon, tr("&Quit"), this);
 	QAction *prefsAction = new QAction(prefsIcon, tr("&Preferences"), this);
@@ -148,7 +161,7 @@ void MainWin::createTrayIcon()
 	menu->addAction(quitAction);
 
 	trayIcon = new QSystemTrayIcon(this);
-	trayIcon->setIcon(icon);
+	trayIcon->setIcon(trayIconPic);
 	trayIcon->setContextMenu(menu);
 	trayIcon->show();
 	connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
@@ -419,8 +432,11 @@ void MainWin::quit()
 void MainWin::showConfigMenu()
 {
 	Preferences prefs(cfg);
-	if (prefs.exec() == QDialog::Accepted)
+	if (prefs.exec() == QDialog::Accepted) {
+		loadTrayIconPic();
+		trayIcon->setIcon(trayIconPic);
 		model->redraw();
+	}
 }
 
 void MainWin::createMainMenu()
