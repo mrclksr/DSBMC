@@ -39,7 +39,8 @@ MainWin::MainWin(QWidget *parent) : QMainWindow(parent)
 	statusLabel   = new QLabel(this);
 	trayTimer     = new QTimer(this);
 	list	      = new QListView(this);
-	QIcon winIcon = qh_loadIcon("drive-removable-media-usb",
+	QIcon winIcon = qh_loadIcon("drive-removable-media-usb-pendrive",
+				    "drive-removable-media-usb",
 				    "drive-harddisk-usb",
 				    "drive-removable-media",
 				    "drive-harddisk", 0);
