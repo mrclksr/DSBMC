@@ -335,6 +335,8 @@ void MainWin::execAction(QAction *action)
 		if (model->execCommand(DSBMC_CMD_PLAY, dev,
 		    playCommand(dev)) == -1)
 			return;
+		if (dsbcfg_getval(cfg, CFG_HIDE_ON_OPEN).boolean)
+			hide();
 		return;
 	case DSBMC_CMD_MOUNT:
 		if (model->execCommand(DSBMC_CMD_MOUNT, dev) == -1)
