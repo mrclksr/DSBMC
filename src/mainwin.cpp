@@ -328,6 +328,8 @@ void MainWin::execAction(QAction *action)
 		    QString(dsbcfg_getval(cfg, CFG_FILEMANAGER).string)) == -1)
 			return;
 		msg = QString(tr("Opening %1. Please wait")).arg(devname);
+		if (dsbcfg_getval(cfg, CFG_HIDE_ON_OPEN).boolean)
+			hide();
 		break;
 	case DSBMC_CMD_PLAY:
 		if (model->execCommand(DSBMC_CMD_PLAY, dev,
@@ -397,6 +399,8 @@ bool MainWin::eventFilter(QObject *obj, QEvent *event)
 				return QObject::eventFilter(obj, event);
 			QString msg = QString(tr("Opening %1. Please wait"))
 					     .arg(dev->dev);
+			if (dsbcfg_getval(cfg, CFG_HIDE_ON_OPEN).boolean)
+				hide();
 			startBusyMessage(msg);
 		}
         }
