@@ -250,27 +250,27 @@ void Model::loadIcons()
 				   "drive-harddisk", 0);
 	icon_play    = qh_loadIcon("media-playback-start", 0);
 	icon_open    = qh_loadIcon("document-open", 0);
-	icon_mount   = qh_loadIcon("emblem-mounted", 0);
-	icon_unmount = qh_loadIcon("emblem-unmounted", 0);
+	icon_mount   = qh_loadIcon("emblem-mounted", "go-up", 0);
+	icon_unmount = qh_loadIcon("emblem-unmounted", "go-down", 0);
 	icon_eject   = qh_loadIcon("media-eject", 0);
 }
 
 void Model::translateErrors()
 {
 	errors	<< tr("Device already mounted")
-		<< tr("Permission denied"     )
-		<< tr("Device not mounted"    )
-		<< tr("Device busy"           )
-		<< tr("No such device"        )
-		<< tr("Device not ejectable"  )
-		<< tr("Unknown command"       )
-		<< tr("Unknown option"        )
-		<< tr("Syntax error"          )
-		<< tr("No media"              )
-		<< tr("Unknown filesystem"    )
-		<< tr("Unknown error"         )
-		<< tr("Mount command failed"  )
-		<< tr("Invalid argument"      )
+		<< tr("Permission denied")
+		<< tr("Device not mounted")
+		<< tr("Device busy")
+		<< tr("No such device")
+		<< tr("Device not ejectable")
+		<< tr("Unknown command")
+		<< tr("Unknown option")
+		<< tr("Syntax error")
+		<< tr("No media")
+		<< tr("Unknown filesystem")
+		<< tr("Unknown error")
+		<< tr("Mount command failed")
+		<< tr("Invalid argument")
 		<< tr("Max. number of connections reached")
 		<< tr("Command string too long")
 		<< tr("Invalid command string")
