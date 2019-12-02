@@ -101,10 +101,7 @@ MainWin::MainWin(QWidget *parent) : QMainWindow(parent)
 	    this, SLOT(checkReply(int, const dsbmc_dev_t *, int, QString)));
 	connect(model,
 	    SIGNAL(deviceAdded(const dsbmc_dev_t *)), this,
-	    SLOT(autoplay(const dsbmc_dev_t *)));
-	connect(model,
-	    SIGNAL(deviceAdded(const dsbmc_dev_t *)), this,
-	    SLOT(show()));
+	    SLOT(catchDeviceAdded(const dsbmc_dev_t *)));
 }
 
 void MainWin::checkForSysTray()
@@ -146,6 +143,7 @@ void MainWin::createTrayIcon()
 	connect(quitAction, &QAction::triggered, this, &MainWin::quit);
 	connect(prefsAction, &QAction::triggered, this,
 		&MainWin::showConfigMenu);
+
 	menu->addAction(prefsAction);
 	menu->addAction(quitAction);
 
@@ -155,6 +153,8 @@ void MainWin::createTrayIcon()
 	trayIcon->show();
 	connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
 	    this, SLOT(trayClicked(QSystemTrayIcon::ActivationReason)));
+	connect(trayIcon, &QSystemTrayIcon::messageClicked,
+	    this, &MainWin::show);
 }
 
 void MainWin::trayClicked(QSystemTrayIcon::ActivationReason reason)
@@ -209,14 +209,42 @@ void MainWin::stopBusyMessage()
 	list->setEnabled(true);
 }
 
+void MainWin::showDevAddedMsg(const char *devname)
+{
+	static int     secs = 10;
+	static time_t  t0 = 0, t1;
+	static QString msg;
+
+	if (!trayIcon->supportsMessages())
+		return;
+	QString str = QString(tr("Storage device %1 added")).arg(devname);
+
+	t1 = time(NULL);
+	if (t1 - t0 < secs)
+		msg.append("\n").append(str);
+	else
+		msg = str;
+	t0 = t1;
+	trayIcon->showMessage(QString(tr("Storage device")), msg,
+			      QSystemTrayIcon::Information, secs * 1000);
+}
+
 void MainWin::autoplay(const dsbmc_dev_t *dev)
 {
-	if (!(dev->cmds & DSBMC_CMD_PLAY))
-		return;
 	QString cmd = playCommand(dev);
 	if (cmd == "")
 		return;
 	model->execCommand(DSBMC_CMD_PLAY, dev, playCommand(dev));
+}
+
+void MainWin::catchDeviceAdded(const dsbmc_dev_t *dev)
+{
+	if (dsbcfg_getval(cfg, CFG_MSGWIN).boolean)
+		showDevAddedMsg(dev->volid);
+	if (dsbcfg_getval(cfg, CFG_POPUP).boolean)
+		show();
+	if ((dev->cmds & DSBMC_CMD_PLAY))
+		autoplay(dev);
 }
 
 void MainWin::checkReply(int action, const dsbmc_dev_t *dev, int code)

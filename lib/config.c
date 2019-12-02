@@ -47,5 +47,7 @@ dsbcfg_vardef_t vardefs[] = {
   { "vcd_auto",    DSBCFG_VAR_BOOLEAN, CFG_VCD_AUTO,    DSBCFG_VAL(false)    },
   { "svcd_auto",   DSBCFG_VAR_BOOLEAN, CFG_SVCD_AUTO,   DSBCFG_VAL(false)    },
   { "cdda_auto",   DSBCFG_VAR_BOOLEAN, CFG_CDDA_AUTO,   DSBCFG_VAL(false)    },
+  { "show_msgwin", DSBCFG_VAR_BOOLEAN, CFG_MSGWIN,      DSBCFG_VAL(true)     },
+  { "popup",       DSBCFG_VAR_BOOLEAN, CFG_POPUP,       DSBCFG_VAL(false)    },
   { "ignore",      DSBCFG_VAR_STRINGS, CFG_HIDE,        DSBCFG_VAL((char **)NULL) }
 };

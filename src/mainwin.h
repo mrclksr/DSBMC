@@ -74,6 +74,8 @@ private:
 	QFrame	 *mkLine(void);
 	QString	 playCommand(const dsbmc_dev_t *dev);
 private slots:
+	void	 showDevAddedMsg(const char *devname);
+	void	 catchDeviceAdded(const dsbmc_dev_t *dev);
 	void	 checkForSysTray(void);
 	void	 updateBusyMessage(void);
 	void	 autoplay(const dsbmc_dev_t *dev);
