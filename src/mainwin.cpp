@@ -498,6 +498,6 @@ void MainWin::catchSelectionChanged(const QItemSelection &selected,
 
 void MainWin::closeEvent(QCloseEvent *event)
 {
-	MainWin::quit();
+	hide();
 	event->ignore();
 }
