@@ -27,11 +27,11 @@
 
 #define DEFAULT_WIDTH        300
 #define DEFAULT_HEIGHT       300
-#define DFLT_CMD_PLAY_CDDA   DSBCFG_VAL("deadbeef all.cda")
+#define DFLT_CMD_PLAY_CDDA   DSBCFG_VAL("vlc cdda://%d")
 #define DFLT_CMD_PLAY_DVD    DSBCFG_VAL("vlc dvd://%d")
 #define DFLT_CMD_PLAY_VCD    DSBCFG_VAL("vlc vcd://%d")
 #define DFLT_CMD_PLAY_SVCD   DSBCFG_VAL("vlc vcd://%d")
-#define DFLT_CMD_FILEMANAGER DSBCFG_VAL("thunar \"%m\"")
+#define DFLT_CMD_FILEMANAGER DSBCFG_VAL("xdg-open \"%m\"")
 
 dsbcfg_vardef_t vardefs[] = {
   { "win_pos_x",   DSBCFG_VAR_INTEGER, CFG_POS_X,       DSBCFG_VAL(0)        },
