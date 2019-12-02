@@ -33,6 +33,7 @@
 #include <QBoxLayout>
 #include <QWidget>
 #include <QCheckBox>
+#include <QTableWidget>
 
 #include "lib/config.h"
 
@@ -45,16 +46,25 @@ public slots:
 private:
 	void	storeList(QString str);
 	QString	quoteString(char *str);
+	QWidget *commandsTab(void);
+	QWidget *generalSettingsTab(void);
+	QFrame	*mkLine(void);
+private slots:
+	void	openIcon(void);
 private:
-	dsbcfg_t     *cfg;
-	QCheckBox    *cdda_autoplay;
-	QCheckBox    *svcd_autoplay;
-	QCheckBox    *vcd_autoplay;
-	QCheckBox    *dvd_autoplay;
-	QLineEdit    *fm_edit;
-	QLineEdit    *dvd_edit;
-	QLineEdit    *vcd_edit;
-	QLineEdit    *cdda_edit;
-	QLineEdit    *svcd_edit;
-	QLineEdit    *ignore_edit;
+	dsbcfg_t  *cfg;
+	QCheckBox *cdda_autoplay;
+	QCheckBox *svcd_autoplay;
+	QCheckBox *vcd_autoplay;
+	QCheckBox *dvd_autoplay;
+	QCheckBox *hideOnOpen;
+	QCheckBox *notify;
+	QCheckBox *popup;
+	QLineEdit *fm_edit;
+	QLineEdit *dvd_edit;
+	QLineEdit *vcd_edit;
+	QLineEdit *cdda_edit;
+	QLineEdit *svcd_edit;
+	QLineEdit *ignore_edit;
+	QLineEdit *icon_edit;
 };

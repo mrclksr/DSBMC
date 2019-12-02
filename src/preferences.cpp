@@ -22,6 +22,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <QGridLayout>
+#include <QFileDialog>
+
 #include "preferences.h"
 #include "qt-helper/qt-helper.h"
 
@@ -32,98 +35,21 @@ Preferences::Preferences(dsbcfg_t *cfg, QWidget *parent) :
 	QIcon okIcon	    = qh_loadStockIcon(QStyle::SP_DialogOkButton, 0);
 	QIcon cancelIcon    = qh_loadStockIcon(QStyle::SP_DialogCancelButton,
 	    NULL);
+	QTabWidget  *tabs   = new QTabWidget(this);
 	QPushButton *ok	    = new QPushButton(okIcon, tr("&Ok"));
 	QPushButton *cancel = new QPushButton(cancelIcon, tr("&Cancel"));
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	QHBoxLayout *bbox   = new QHBoxLayout;
-	QFormLayout *form   = new QFormLayout;
-	QString toolTip     = tr("Use %d and %m as placeholders for the "    \
-				 "device and mount point, respectively");
+
 	setWindowIcon(winIcon);
 	setWindowTitle(tr("Preferences"));
 
-	form->setVerticalSpacing(0);
-	
-	fm_edit   = new QLineEdit(QString(dsbcfg_getval(cfg,
-				CFG_FILEMANAGER).string));
-	dvd_edit  = new QLineEdit(QString(dsbcfg_getval(cfg,
-				CFG_PLAY_DVD).string));
-	vcd_edit  = new QLineEdit(QString(dsbcfg_getval(cfg,
-				CFG_PLAY_VCD).string));
-	svcd_edit = new QLineEdit(QString(dsbcfg_getval(cfg,
-				CFG_PLAY_SVCD).string));
-	cdda_edit = new QLineEdit(QString(dsbcfg_getval(cfg,
-				CFG_PLAY_CDDA).string));
-	ignore_edit = new QLineEdit;
-	ignore_edit->setToolTip(tr("Comma-separated list of devices, mount " \
-				   "points, and volume IDs to ignore.\n"     \
-				   "Example: /dev/da0s1, EFISYS, "	     \
-				   "/var/run/user/1001/gvfs"));
-	fm_edit->setToolTip(toolTip);
-	dvd_edit->setToolTip(toolTip);
-	vcd_edit->setToolTip(toolTip);
-	cdda_edit->setToolTip(toolTip);
-	svcd_edit->setToolTip(toolTip);
-	
-	QString ignoreList;
-	for (char **v = dsbcfg_getval(cfg, CFG_HIDE).strings;
-	    v != NULL && *v != NULL; v++) {
-		if (ignoreList != "")
-			ignoreList.append(", ");
-		ignoreList.append(quoteString(*v));
-	}
-	ignore_edit->setText(ignoreList);
-	
-	QWidget *container = new QWidget;
-	QHBoxLayout *hbox  = new QHBoxLayout(container);
-	hbox->addWidget(fm_edit);
-	form->addRow(tr("Filemanager:"), container);
-
-	container	   = new QWidget;
-	hbox		   = new QHBoxLayout(container);
-	dvd_autoplay       = new QCheckBox(tr("Autoplay"));
-	dvd_autoplay->setCheckState(dsbcfg_getval(cfg,
-		CFG_DVD_AUTO).boolean ? Qt::Checked : Qt::Unchecked);
-	hbox->addWidget(dvd_edit);
-	hbox->addWidget(dvd_autoplay);
-	form->addRow(tr("Play DVDs with:"), container);
-	
-	container	    = new QWidget;
-	hbox		    = new QHBoxLayout(container);
-	cdda_autoplay       = new QCheckBox(tr("Autoplay"));
-	cdda_autoplay->setCheckState(dsbcfg_getval(cfg,
-		CFG_CDDA_AUTO).boolean ? Qt::Checked : Qt::Unchecked);
-	hbox->addWidget(cdda_edit);
-	hbox->addWidget(cdda_autoplay);
-	form->addRow(tr("Play Audio CDs with:"), container);
-
-	container	    = new QWidget;
-	hbox		    = new QHBoxLayout(container);
-	vcd_autoplay        = new QCheckBox(tr("Autoplay"));
-	vcd_autoplay->setCheckState(dsbcfg_getval(cfg,
-		CFG_VCD_AUTO).boolean ? Qt::Checked : Qt::Unchecked);
-	hbox->addWidget(vcd_edit);
-	hbox->addWidget(vcd_autoplay);
-	form->addRow(tr("Play VCDs with:"), container);
-
-	container	    = new QWidget;
-	hbox		    = new QHBoxLayout(container);
-	svcd_autoplay       = new QCheckBox(tr("Autoplay"));
-	svcd_autoplay->setCheckState(dsbcfg_getval(cfg,
-		CFG_SVCD_AUTO).boolean ? Qt::Checked : Qt::Unchecked);
-	hbox->addWidget(svcd_edit);
-	hbox->addWidget(svcd_autoplay);
-	form->addRow(tr("Play SVCDs with:"), container);
-
-	container = new QWidget;
-	hbox      = new QHBoxLayout(container);
-	hbox->addWidget(ignore_edit);
-	form->addRow(tr("Ignore:"), container);
+	tabs->addTab(generalSettingsTab(), tr("General settings"));
+	tabs->addTab(commandsTab(), tr("Commands"));
+	layout->addWidget(tabs);
 
 	bbox->addWidget(ok, 1, Qt::AlignRight);
 	bbox->addWidget(cancel, 0, Qt::AlignRight);
-
-	layout->addLayout(form);
 	layout->addLayout(bbox);
 
 	connect(ok, SIGNAL(clicked()), this, SLOT(acceptSlot()));
@@ -207,6 +133,134 @@ QString Preferences::quoteString(char *str)
 	return (buf);
 }
 
+QWidget *Preferences::generalSettingsTab()
+{
+	QWidget	    *tab    = new QWidget;
+	QVBoxLayout *layout = new QVBoxLayout(tab);
+	QGridLayout *grid   = new QGridLayout;
+	ignore_edit	    = new QLineEdit;
+	icon_edit	    = new QLineEdit;
+	hideOnOpen	    = new QCheckBox(tr("Hide main window after "   \
+					       "opening a device"));
+	notify		    = new QCheckBox(tr("Show notification when a " \
+					       "device was added"));
+	popup		    = new QCheckBox(tr("Show main window when a "  \
+					       "device was added"));
+	hideOnOpen->setCheckState(
+	    dsbcfg_getval(cfg, CFG_HIDE_ON_OPEN).boolean ? Qt::Checked : \
+		Qt::Unchecked);
+	notify->setCheckState(
+	    dsbcfg_getval(cfg, CFG_MSGWIN).boolean ? Qt::Checked : \
+		Qt::Unchecked);
+	popup->setCheckState(
+	    dsbcfg_getval(cfg, CFG_POPUP).boolean ? Qt::Checked : \
+		Qt::Unchecked);
+	layout->addWidget(hideOnOpen);
+	layout->addWidget(notify);
+	layout->addWidget(popup);
+	layout->addWidget(mkLine());
+
+	QPushButton *openFileBt = new QPushButton(tr("Browse files"));
+	connect(openFileBt, &QPushButton::clicked, this, &Preferences::openIcon);
+
+	icon_edit->setText(QString(dsbcfg_getval(cfg, CFG_TRAY_ICON).string));
+	grid->addWidget(new QLabel(tr("Tray icon:")), 0, 0);
+	grid->addWidget(icon_edit, 0, 1);
+	grid->addWidget(openFileBt, 0, 2);
+
+	grid->addWidget(new QLabel(tr("Ignore devices and\nmount points:")),
+			1, 0);
+	grid->addWidget(ignore_edit, 1, 1, 1, 3);
+	grid->addWidget(new QLabel(tr("Example: <tt>/dev/da0s1, " \
+				      "EFISYS, /var/run/user/1001/gvfs</tt>")),
+			2, 1);
+	QString ignoreList;
+	for (char **v = dsbcfg_getval(cfg, CFG_HIDE).strings;
+	    v != NULL && *v != NULL; v++) {
+		if (ignoreList != "")
+			ignoreList.append(", ");
+		ignoreList.append(quoteString(*v));
+	}
+	ignore_edit->setText(ignoreList);
+	layout->addLayout(grid);
+	layout->addStretch(1);
+
+	return (tab);
+}
+
+QWidget *Preferences::commandsTab()
+{
+	QLineEdit   *edit;
+	QCheckBox   *cb;
+	QWidget	    *tab    = new QWidget;
+	QGridLayout *layout = new QGridLayout(tab);
+	QString toolTip     = tr("Use %d and %m as placeholders for the "    \
+				 "device and mount point, respectively");
+
+	struct {
+		QString	  label;
+		int	  cfg_id_prog;
+		int	  cfg_id_autoplay;
+		QLineEdit **edit;
+		QCheckBox **cb;
+	} settings[] = {
+		{
+		  tr("Filemanager:"),	      CFG_FILEMANAGER, 0,
+		  &fm_edit,		      nullptr
+		},
+		{
+		  tr("Play DVDs with:"),      CFG_PLAY_DVD,    CFG_DVD_AUTO,
+		  &dvd_edit,		      &dvd_autoplay
+		},
+		{
+		  tr("Play Audio CDs with:"), CFG_PLAY_CDDA,   CFG_CDDA_AUTO,
+		  &cdda_edit,		      &cdda_autoplay
+		},
+		{
+		  tr("Play VCDs with:"),      CFG_PLAY_VCD,    CFG_VCD_AUTO,
+		  &vcd_edit,		      &vcd_autoplay
+		},
+		{
+		  tr("Play SVCDs with:"),     CFG_PLAY_SVCD,   CFG_SVCD_AUTO,
+		  &svcd_edit,		      &svcd_autoplay
+		}
+	};
+	for (int i = 0; i < 5; i++) {
+		edit = new QLineEdit(QString(dsbcfg_getval(cfg,
+				settings[i].cfg_id_prog).string));
+		edit->setToolTip(toolTip);
+		*settings[i].edit = edit;
+		if (settings[i].cb != nullptr) {
+			cb = new QCheckBox(tr("Autoplay"));
+			cb->setCheckState(dsbcfg_getval(cfg,
+				settings[i].cfg_id_autoplay).boolean ?\
+					Qt::Checked : Qt::Unchecked);
+			layout->addWidget(cb, i, 2);
+			*settings[i].cb = cb;
+		}
+		layout->addWidget(new QLabel(settings[i].label), i, 0);
+		layout->addWidget(*settings[i].edit, i, 1);
+	}
+	return (tab);
+}
+
+void Preferences::openIcon()
+{
+	QString filename = QFileDialog::getOpenFileName(this,
+		tr("Open Image"), "/",
+		tr("Image Files (*.png *.svg *.xpm)"));
+	if (filename.isEmpty())
+		return;
+	icon_edit->setText(filename);
+}
+
+QFrame *Preferences::mkLine()
+{
+	QFrame *line = new QFrame(this);
+	line->setFrameShape(QFrame::HLine);
+	line->setFrameShadow(QFrame::Sunken);
+	return (line);
+}
 
 void Preferences::acceptSlot()
 {
@@ -220,13 +274,13 @@ void Preferences::acceptSlot()
 
 	val.string = cdda_edit->text().toLatin1().data();
 	dsbcfg_setval(cfg, CFG_PLAY_CDDA, val);
-	
+
 	val.string = vcd_edit->text().toLatin1().data();
 	dsbcfg_setval(cfg, CFG_PLAY_VCD, val);
-	
+
 	val.string = svcd_edit->text().toLatin1().data();
 	dsbcfg_setval(cfg, CFG_PLAY_SVCD, val);
-	
+
 	val.boolean = dvd_autoplay->checkState() == Qt::Checked ? true : false;
 	dsbcfg_setval(cfg, CFG_DVD_AUTO, val);
 
@@ -239,8 +293,20 @@ void Preferences::acceptSlot()
 	val.boolean = svcd_autoplay->checkState() == Qt::Checked ? true : false;
 	dsbcfg_setval(cfg, CFG_SVCD_AUTO, val);
 
+	val.boolean = hideOnOpen->checkState() == Qt::Checked ? true : false;
+	dsbcfg_setval(cfg, CFG_HIDE_ON_OPEN, val);
+
+	val.boolean = notify->checkState() == Qt::Checked ? true : false;
+	dsbcfg_setval(cfg, CFG_MSGWIN, val);
+
+	val.boolean = popup->checkState() == Qt::Checked ? true : false;
+	dsbcfg_setval(cfg, CFG_POPUP, val);
+
+	val.string = icon_edit->text().toLatin1().data();
+	dsbcfg_setval(cfg, CFG_TRAY_ICON, val);
+
 	storeList(ignore_edit->text());
-	
+
 	dsbcfg_write(PROGRAM, "config", cfg);
 	accept();
 }
