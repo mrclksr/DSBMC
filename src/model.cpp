@@ -450,6 +450,8 @@ void Model::fetchEvents()
 		if ((dev = devFromId(devids.at(i))) != NULL)
 			emit deviceAdded(dev);
 	}
+	if (devices.count() == 0)
+		emit noDevices();
 }
 
 void Model::startThread(Thread *thr)

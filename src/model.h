@@ -72,6 +72,7 @@ public:
 	const dsbmc_dev_t *devFromRow(int row);
 	const dsbmc_dev_t *devFromId(int id);
 signals:
+	void	 noDevices(void);
 	void	 deviceAdded(const dsbmc_dev_t *);
 	void	 actionFinished(int action, const dsbmc_dev_t *, int code);
 	void	 actionFinished(int action, const dsbmc_dev_t *, int code,

@@ -103,6 +103,7 @@ MainWin::MainWin(QWidget *parent) : QMainWindow(parent)
 	connect(model,
 	    SIGNAL(deviceAdded(const dsbmc_dev_t *)), this,
 	    SLOT(catchDeviceAdded(const dsbmc_dev_t *)));
+	connect(model, &Model::noDevices, this, &MainWin::hide);
 }
 
 void MainWin::checkForSysTray()
