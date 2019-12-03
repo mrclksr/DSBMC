@@ -316,7 +316,7 @@ QAction *Model::menuAction(const dsbmc_dev_t *dev, int command)
 		name = tr("Eject");
 		break;
 	case DSBMC_CMD_SPEED:
-		icon = QIcon();
+		icon = icon_cd;
 		name = tr("Set reading speed");
 	}
 	QAction	   *action = new QAction(icon, name, this);
