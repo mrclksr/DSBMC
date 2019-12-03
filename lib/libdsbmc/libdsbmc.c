@@ -626,9 +626,9 @@ add_device(dsbmc_t *dh, const dsbmc_dev_t *d)
 static void
 del_device(dsbmc_t *dh, const char *dev)
 {
-	size_t i;
+	int i;
 
-	for (i = dh->ndevs - 1; i >= 0; i--) {
+	for (i = (int)dh->ndevs - 1; i >= 0; i--) {
 		if (!dh->devs[i]->removed)
 			continue;
 		if (strcmp(dh->devs[i]->dev, dev) == 0)
@@ -640,7 +640,7 @@ del_device(dsbmc_t *dh, const char *dev)
 	free(dh->devs[i]->volid);
 	free(dh->devs[i]->mntpt);
 	free(dh->devs[i]);
-	for (; i < dh->ndevs - 1; i++)
+	for (; i < (int)dh->ndevs - 1; i++)
 		dh->devs[i] = dh->devs[i + 1];
 	dh->ndevs--;
 }
