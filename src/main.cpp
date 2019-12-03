@@ -29,12 +29,15 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <signal.h>
 #include <pwd.h>
 
 #include "mainwin.h"
 #include "qt-helper/qt-helper.h"
 
 #define PATH_LOCK ".dsbmc.lock"
+
+static char path_lock[PATH_MAX] = { 0 };
 
 void
 usage()
@@ -67,12 +70,23 @@ create_mddev(int npaths, char **paths)
 	dh = NULL;
 }
 
+static void
+cleanup(int /* unused */)
+{
+	static sig_atomic_t block = 0;
+
+	if (block == 1)
+		return;
+	block = 1;
+	(void)unlink(path_lock);
+	exit(EXIT_SUCCESS);
+}
+
 int
 main(int argc, char *argv[])
 {
-	int	      ch, lockfd;
+	int	      ch, lockfd, error;
 	bool	      iflag;
-	char	      path_lock[PATH_MAX];
 	struct passwd *pw;
 
 	iflag = false;
@@ -106,6 +120,10 @@ main(int argc, char *argv[])
 		qh_errx(0, EXIT_FAILURE, "flock(%s)", path_lock);
 	}
 	(void)create_mddev(argc, argv);
+	(void)signal(SIGINT, cleanup);
+	(void)signal(SIGTERM, cleanup);
+	(void)signal(SIGQUIT, cleanup);
+	(void)signal(SIGHUP, cleanup);
 
 	QApplication app(argc, argv);
 	QTranslator translator;
@@ -116,5 +134,7 @@ main(int argc, char *argv[])
 	MainWin win;
 	if (!iflag)
 		win.show();
-	return (app.exec());
+	error = app.exec();
+	cleanup(0);
+	return (error);
 }
