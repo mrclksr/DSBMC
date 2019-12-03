@@ -24,6 +24,7 @@
 
 #include <QScreen>
 #include <QDebug>
+#include <QSpinBox>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QStatusBar>
@@ -350,6 +351,7 @@ QString MainWin::playCommand(const dsbmc_dev_t *dev)
 
 void MainWin::execAction(QAction *action)
 {
+	int		   s;
 	QString		   msg, devname;
 	MenuAction	   ma  = action->data().value<MenuAction>();
 	const dsbmc_dev_t *dev = model->devFromId(ma.devid);
@@ -385,6 +387,14 @@ void MainWin::execAction(QAction *action)
 		if (model->eject(dev, false) == -1)
 			return;
 		msg = QString(tr("Ejecting %1. Please wait")).arg(dev->dev);
+		break;
+	case DSBMC_CMD_SPEED:
+		s = dev->speed;
+		if (setSpeedWin(dev->dev, &s) == QDialog::Rejected)
+			return;
+		if (model->speed(dev, s) == -1)
+			return;
+		msg = QString(tr("Setting reading speed of %1")).arg(dev->dev);
 		break;
 	default:
 		return;
@@ -490,7 +500,6 @@ int MainWin::forceEjectWin(const char *dev)
 	QMessageBox msgBox(this);
 	msgBox.setWindowModality(Qt::WindowModal);
 	msgBox.setSizeGripEnabled(true);
-	msgBox.setText(tr("Device Busy\n"));
 	msgBox.setWindowTitle(tr("Device Busy"));
 	msgBox.setIcon(QMessageBox::Warning);
 	msgBox.setWindowIcon(msgBox.iconPixmap());
@@ -500,6 +509,45 @@ int MainWin::forceEjectWin(const char *dev)
 	msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
 
 	return (msgBox.exec());
+}
+
+int MainWin::setSpeedWin(const char *dev, int *speed)
+{
+	QDialog *win	    = new QDialog(this);
+	QIcon winIcon	    = qh_loadIcon("preferences-system", 0);
+	QIcon okIcon	    = qh_loadStockIcon(QStyle::SP_DialogOkButton, 0);
+	QIcon cancelIcon    = qh_loadStockIcon(QStyle::SP_DialogCancelButton,
+	    NULL);
+	QSpinBox    *spin   = new QSpinBox;
+	QPushButton *ok	    = new QPushButton(okIcon, tr("&Ok"));
+	QPushButton *cancel = new QPushButton(cancelIcon, tr("&Cancel"));
+	QVBoxLayout *layout = new QVBoxLayout(win);
+	QHBoxLayout *bbox   = new QHBoxLayout;
+
+	setWindowIcon(winIcon);
+	setWindowTitle(tr("Set reading speed"));
+
+	spin->setMaximum(72);
+	spin->setMinimum(1);
+	spin->setValue(*speed);
+	spin->setSuffix("x");
+
+	layout->addWidget(new QLabel(tr("Set the reading speed of %1")
+				    .arg(dev)));
+	layout->addWidget(spin);
+
+	bbox->addWidget(ok, 1, Qt::AlignRight);
+	bbox->addWidget(cancel, 0, Qt::AlignRight);
+	layout->addLayout(bbox);
+
+	connect(ok, &QPushButton::clicked, win, &QDialog::accept);
+	connect(cancel, &QPushButton::clicked, win, &QDialog::reject);
+
+	if (win->exec() == QDialog::Accepted) {
+		*speed = spin->value();
+		return (QDialog::Accepted);
+	}
+	return (QDialog::Rejected);
 }
 
 void MainWin::showSize(const dsbmc_dev_t *dev)

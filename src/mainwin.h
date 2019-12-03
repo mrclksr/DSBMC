@@ -61,6 +61,7 @@ public slots:
 		     QString program);
 	void	 execAction(QAction *action);
 private:
+	int	 setSpeedWin(const char *dev, int *speed);
 	int	 forceEjectWin(const char *dev);
 	void	 errWin(QString message);
 	void	 createMenuActions(void);

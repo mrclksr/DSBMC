@@ -59,6 +59,7 @@ public:
 	int	 eject(const dsbmc_dev_t *dev, bool force = false);
 	int	 open(const dsbmc_dev_t *dev, QString program);
 	int	 play(const dsbmc_dev_t *dev, QString program);
+	int	 speed(const dsbmc_dev_t *dev, int speed);
 	void	 init(void);
 	void	 setIconSize(QSize size);
 	void	 redraw(void);

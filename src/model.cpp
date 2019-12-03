@@ -315,6 +315,9 @@ QAction *Model::menuAction(const dsbmc_dev_t *dev, int command)
 		icon = icon_eject;
 		name = tr("Eject");
 		break;
+	case DSBMC_CMD_SPEED:
+		icon = QIcon();
+		name = tr("Set reading speed");
 	}
 	QAction	   *action = new QAction(icon, name, this);
 	MenuAction ma;
@@ -342,6 +345,8 @@ QMenu *Model::getContextMenu(int row)
 		menu->addAction(menuAction(dev, DSBMC_CMD_MOUNT));
 	if ((dev->cmds & DSBMC_CMD_UNMOUNT))
 		menu->addAction(menuAction(dev, DSBMC_CMD_UNMOUNT));
+	if ((dev->cmds & DSBMC_CMD_SPEED))
+		menu->addAction(menuAction(dev, DSBMC_CMD_SPEED));
 	if ((dev->cmds & DSBMC_CMD_EJECT))
 		menu->addAction(menuAction(dev, DSBMC_CMD_EJECT));
 	return (menu);
@@ -482,6 +487,11 @@ int Model::open(const dsbmc_dev_t *dev, QString program)
 int Model::play(const dsbmc_dev_t *dev, QString program)
 {
 	return (execCommand(DSBMC_CMD_PLAY, dev, program));
+}
+
+int Model::speed(const dsbmc_dev_t *dev, int speed)
+{
+	return (execCommand(DSBMC_CMD_SPEED, dev, false, speed));
 }
 
 int Model::execCommand(int command, const dsbmc_dev_t *dev, QString program)
