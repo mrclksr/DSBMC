@@ -274,8 +274,19 @@ void MainWin::checkReply(int action, const dsbmc_dev_t *dev, int code)
 			errWin(tr("Couldn't mount %1: %2")
 				.arg(dev->dev).arg(model->errcodeToStr(code)));
 		} else if (action == DSBMC_CMD_UNMOUNT) {
-			errWin(tr("Couldn't unmount %1: %2")
-				.arg(dev->dev).arg(model->errcodeToStr(code)));
+			if (code == DSBMC_ERR_DEVICE_BUSY || code == EBUSY) {
+				if (forceEjectWin(dev->dev) !=
+				    QMessageBox::AcceptRole)
+					return;
+				QString msg = tr("Unmounting %1. Please wait")
+						.arg(dev->dev);
+				startBusyMessage(msg);
+				model->unmount(dev, true);
+			} else {
+				errWin(tr("Couldn't unmount %1: %2")
+				    .arg(dev->dev)
+				    .arg(model->errcodeToStr(code)));
+			}
 		}
 	} else if (action == DSBMC_CMD_EJECT && code != 0) {
 		errWin(tr("Couldn't eject %1: %2")
@@ -470,6 +481,22 @@ void MainWin::errWin(QString message)
 	msgBox.setText(message);
 	msgBox.addButton(tr("Ok"), QMessageBox::ActionRole);
 	msgBox.exec();
+}
+
+int MainWin::forceEjectWin(const char *dev)
+{
+	QMessageBox msgBox(this);
+	msgBox.setWindowModality(Qt::WindowModal);
+	msgBox.setSizeGripEnabled(true);
+	msgBox.setText(tr("Device Busy\n"));
+	msgBox.setWindowTitle(tr("Device Busy"));
+	msgBox.setIcon(QMessageBox::Warning);
+	msgBox.setWindowIcon(msgBox.iconPixmap());
+	msgBox.setText(tr("%1 is busy. Would you like to forcefully unmount it?").arg(dev));
+	msgBox.addButton(tr("Force unmount"), QMessageBox::AcceptRole);
+	msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
+
+	return (msgBox.exec());
 }
 
 void MainWin::showSize(const dsbmc_dev_t *dev)
