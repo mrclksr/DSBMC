@@ -248,7 +248,7 @@ void MainWin::autoplay(const dsbmc_dev_t *dev)
 	QString cmd = playCommand(dev);
 	if (cmd == "")
 		return;
-	model->execCommand(DSBMC_CMD_PLAY, dev, playCommand(dev));
+	model->play(dev, playCommand(dev));
 }
 
 void MainWin::catchDeviceAdded(const dsbmc_dev_t *dev)
@@ -338,7 +338,7 @@ void MainWin::execAction(QAction *action)
 	devname = model->getDevname(dev);
 	switch (ma.action) {
 	case DSBMC_CMD_OPEN:
-		if (model->execCommand(DSBMC_CMD_OPEN, dev,
+		if (model->open(dev,
 		    QString(dsbcfg_getval(cfg, CFG_FILEMANAGER).string)) == -1)
 			return;
 		msg = QString(tr("Opening %1. Please wait")).arg(devname);
@@ -346,24 +346,23 @@ void MainWin::execAction(QAction *action)
 			hide();
 		break;
 	case DSBMC_CMD_PLAY:
-		if (model->execCommand(DSBMC_CMD_PLAY, dev,
-		    playCommand(dev)) == -1)
+		if (model->play(dev, playCommand(dev)) == -1)
 			return;
 		if (dsbcfg_getval(cfg, CFG_HIDE_ON_OPEN).boolean)
 			hide();
 		return;
 	case DSBMC_CMD_MOUNT:
-		if (model->execCommand(DSBMC_CMD_MOUNT, dev) == -1)
+		if (model->mount(dev) == -1)
 			return;
 		msg = QString(tr("Mounting %1. Please wait")).arg(devname);
 		break;
 	case DSBMC_CMD_UNMOUNT:
-		if (model->execCommand(DSBMC_CMD_UNMOUNT, dev) == -1)
+		if (model->unmount(dev, false) == -1)
 			return;
 		msg = QString(tr("Unmounting %1. Please wait")).arg(devname);
 		break;
 	case DSBMC_CMD_EJECT:
-		if (model->execCommand(DSBMC_CMD_EJECT, dev) == -1)
+		if (model->eject(dev, false) == -1)
 			return;
 		msg = QString(tr("Ejecting %1. Please wait")).arg(devname);
 		break;
@@ -409,8 +408,7 @@ bool MainWin::eventFilter(QObject *obj, QEvent *event)
 		int row = list->indexAt(ev->pos()).row();
 		const dsbmc_dev_t *dev = model->devFromRow(row);
 		if (dev != NULL) {
-			if (model->execCommand(DSBMC_CMD_OPEN, dev,
-			    QString(dsbcfg_getval(cfg,
+			if (model->open(dev, QString(dsbcfg_getval(cfg,
 			    CFG_FILEMANAGER).string)) == -1)
 				return QObject::eventFilter(obj, event);
 			QString msg = QString(tr("Opening %1. Please wait"))

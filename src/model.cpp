@@ -483,3 +483,20 @@ int Model::execCommand(int command, const dsbmc_dev_t *dev, QString program)
 
 	return (0);
 }
+
+int Model::execCommand(int command, const dsbmc_dev_t *dev, bool force, int speed)
+{
+	Thread *thr;
+
+	if (dev == NULL)
+		return (-1);
+	if (!mutex->try_lock()) {
+		// A command is already running
+		return (-1);
+	}
+	thr = new Thread(mutex, command, dh, dev, force, speed);
+	startThread(thr);
+	mutex->unlock();
+
+	return (0);
+}

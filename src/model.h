@@ -55,8 +55,11 @@ public:
 	int	 rowCount(const QModelIndex &parent) const override;
 	int	 rowCount(void) const;
 	int	 querySize(const dsbmc_dev_t *, uint64_t *, uint64_t *);
-	int	 execCommand(int command, const dsbmc_dev_t *dev,
-			     QString program = "");
+	int	 mount(const dsbmc_dev_t *dev);
+	int	 unmount(const dsbmc_dev_t *dev, bool force = false);
+	int	 eject(const dsbmc_dev_t *dev, bool force = false);
+	int	 open(const dsbmc_dev_t *dev, QString program);
+	int	 play(const dsbmc_dev_t *dev, QString program);
 	void	 init(void);
 	void	 setIconSize(QSize size);
 	void	 redraw(void);
@@ -83,6 +86,9 @@ private slots:
 private:
 	int	 devRow(const dsbmc_dev_t *dev);
 	int	 addDevice(const dsbmc_dev_t *, int row = -1);
+	int	 execCommand(int command, const dsbmc_dev_t *dev, bool force, int speed);
+	int	 execCommand(int command, const dsbmc_dev_t *dev,
+			     QString program = "");
 	bool	 hideDev(const dsbmc_dev_t *dev);
 	void	 loadIcons(void);
 	void	 removeDevice(const dsbmc_dev_t *);
