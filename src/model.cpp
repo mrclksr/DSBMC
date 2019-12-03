@@ -430,8 +430,10 @@ void Model::fetchEvents()
 	while (dsbmc_fetch_event(dh, &e) > 0) {
 		switch (e.type) {
 		case DSBMC_EVENT_ADD_DEVICE:
-			addDevice(e.dev);
-			devids.append(e.dev->id);
+			if (!hideDev(e.dev)) {
+				addDevice(e.dev);
+				devids.append(e.dev->id);
+			}
 			break;
 		case DSBMC_EVENT_DEL_DEVICE:
 			if (e.dev != NULL)
