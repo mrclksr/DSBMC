@@ -453,7 +453,8 @@ void MainWin::showConfigMenu()
 	Preferences prefs(cfg);
 	if (prefs.exec() == QDialog::Accepted) {
 		loadTrayIconPic();
-		trayIcon->setIcon(trayIconPic);
+		if (trayIcon)
+			trayIcon->setIcon(trayIconPic);
 		model->redraw();
 	}
 }
