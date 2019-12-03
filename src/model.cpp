@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QFontMetrics>
 #include <QApplication>
+#include <paths.h>
 
 #include "model.h"
 #include "qt-helper.h"
@@ -87,6 +88,13 @@ bool Model::hideDev(const dsbmc_dev_t *dev)
 	
 	for (hide = false, v = dsbcfg_getval(cfg, CFG_HIDE).strings;
 	    !hide && v != NULL && *v != NULL; v++) {
+		if (strncmp(*v, _PATH_DEV, sizeof(_PATH_DEV) - 1) != 0) {
+			char *name = dev->dev;
+			if (strncmp(name, _PATH_DEV, sizeof(_PATH_DEV) - 1) == 0)
+				name += sizeof(_PATH_DEV) - 1;
+			if (strcmp(name, *v) == 0)
+				return (true);
+		}
 		if (strcmp(dev->dev, *v) == 0)
 			return (true);
 		else if (dev->mounted && strcmp(dev->mntpt, *v) == 0)
