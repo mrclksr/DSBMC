@@ -176,6 +176,8 @@ QWidget *Preferences::generalSettingsTab()
 	grid->addWidget(new QLabel(tr("Example: <tt>/dev/da0s1, " \
 				      "EFISYS, /var/run/user/1001/gvfs</tt>")),
 			2, 1);
+	ignore_edit->setToolTip("A comma-separated list of device names, " \
+				"mount points, and volume IDs to ignore");
 	QString ignoreList;
 	for (char **v = dsbcfg_getval(cfg, CFG_HIDE).strings;
 	    v != NULL && *v != NULL; v++) {
