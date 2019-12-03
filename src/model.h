@@ -64,7 +64,6 @@ public:
 	void	 redraw(void);
 	QMenu	 *getContextMenu(int row);
 	QString  errcodeToStr(int code);
-	QString	 getDevname(const dsbmc_dev_t *dev);
 	QString	 bytesToUnits(uint64_t bytes);
 	QVariant data(const QModelIndex &index, int role) const override;
 	QVariant headerData(int section, Qt::Orientation orientation, int role)

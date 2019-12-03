@@ -149,13 +149,6 @@ int Model::devRow(const dsbmc_dev_t *dev)
 	return (-1);
 }
 
-QString Model::getDevname(const dsbmc_dev_t *dev)
-{
-	if (dev == NULL)
-		return (QString(""));
-	return (QString(dev->dev));
-}
-
 const dsbmc_dev_t *Model::devFromRow(int row)
 {
 	QModelIndex idx = this->index(row);

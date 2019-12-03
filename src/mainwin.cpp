@@ -356,13 +356,12 @@ void MainWin::execAction(QAction *action)
 	
 	if (dev == NULL)
 		return;
-	devname = model->getDevname(dev);
 	switch (ma.action) {
 	case DSBMC_CMD_OPEN:
 		if (model->open(dev,
 		    QString(dsbcfg_getval(cfg, CFG_FILEMANAGER).string)) == -1)
 			return;
-		msg = QString(tr("Opening %1. Please wait")).arg(devname);
+		msg = QString(tr("Opening %1. Please wait")).arg(dev->dev);
 		if (dsbcfg_getval(cfg, CFG_HIDE_ON_OPEN).boolean)
 			hide();
 		break;
@@ -375,17 +374,17 @@ void MainWin::execAction(QAction *action)
 	case DSBMC_CMD_MOUNT:
 		if (model->mount(dev) == -1)
 			return;
-		msg = QString(tr("Mounting %1. Please wait")).arg(devname);
+		msg = QString(tr("Mounting %1. Please wait")).arg(dev->dev);
 		break;
 	case DSBMC_CMD_UNMOUNT:
 		if (model->unmount(dev, false) == -1)
 			return;
-		msg = QString(tr("Unmounting %1. Please wait")).arg(devname);
+		msg = QString(tr("Unmounting %1. Please wait")).arg(dev->dev);
 		break;
 	case DSBMC_CMD_EJECT:
 		if (model->eject(dev, false) == -1)
 			return;
-		msg = QString(tr("Ejecting %1. Please wait")).arg(devname);
+		msg = QString(tr("Ejecting %1. Please wait")).arg(dev->dev);
 		break;
 	default:
 		return;
@@ -518,7 +517,7 @@ void MainWin::showSize(const dsbmc_dev_t *dev)
 	if (model->querySize(dev, &mediasize, &bytesfree))
 		return;
 	QString status = QString("%1 Capacity: %2 Free: %3")
-	    .arg(model->getDevname(dev))
+	    .arg(dev->dev)
 	    .arg(model->bytesToUnits(mediasize))
 	    .arg(model->bytesToUnits(bytesfree));
 	statusLabel->setText(status);
