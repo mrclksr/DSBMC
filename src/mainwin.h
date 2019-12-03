@@ -73,7 +73,6 @@ private:
 	void	 saveGeometry(void);
 	void	 createTrayIcon(void);
 	void	 loadTrayIconPic(void);
-	QFrame	 *mkLine(void);
 	QString	 playCommand(const dsbmc_dev_t *dev);
 private slots:
 	void	 showDevAddedMsg(const char *devname);

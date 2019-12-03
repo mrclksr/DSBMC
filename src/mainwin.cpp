@@ -471,14 +471,6 @@ void MainWin::createMainMenu()
 	mainMenu->addAction(quitAction);
 }
 
-QFrame *MainWin::mkLine()
-{
-	QFrame *line = new QFrame(this);
-	line->setFrameShape(QFrame::HLine);
-	line->setFrameShadow(QFrame::Sunken);
-	return (line);
-}
-
 void MainWin::errWin(QString message)
 {
 	QMessageBox msgBox(this);
