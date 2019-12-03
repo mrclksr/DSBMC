@@ -221,10 +221,13 @@ dsbmc_size(dsbmc_t *dh, const dsbmc_dev_t *d)
 int
 dsbmc_set_speed(dsbmc_t *dh, const dsbmc_dev_t *d, int speed)
 {
+	int ret;
 	dsbmc_dev_t *dev;
 
 	LOOKUP_DEV(dh, d, dev);
-	return (dsbmc_send(dh, "speed %s %d\n", dev->dev, speed));
+	if ((ret = dsbmc_send(dh, "speed %s %d\n", dev->dev, speed)) == 0)
+		dev->speed = dh->event.devinfo.speed;
+	return (ret);
 }
 
 int
@@ -924,6 +927,8 @@ process_event(dsbmc_t *dh, char *buf)
 			d->mediasize = dh->event.mediasize;
 			d->used = dh->event.used;
 			d->free = dh->event.free;
+		} else if (dh->sender[0].id == DSBMC_CMD_SPEED) {
+			d->speed = dh->event.devinfo.speed;
 		}
 	case DSBMC_EVENT_ERROR_MSG:
 		if (dh->cmdqsz <= 0)
