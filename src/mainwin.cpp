@@ -289,8 +289,17 @@ void MainWin::checkReply(int action, const dsbmc_dev_t *dev, int code)
 			}
 		}
 	} else if (action == DSBMC_CMD_EJECT && code != 0) {
-		errWin(tr("Couldn't eject %1: %2")
-			.arg(dev->dev).arg(model->errcodeToStr(code)));
+		if (code == DSBMC_ERR_DEVICE_BUSY || code == EBUSY) {
+			if (forceEjectWin(dev->dev) != QMessageBox::AcceptRole)
+				return;
+			QString msg = tr("Ejecting %1. Please wait")
+				        .arg(dev->dev);
+			startBusyMessage(msg);
+			model->eject(dev, true);
+		} else {
+			errWin(tr("Couldn't eject %1: %2")
+				.arg(dev->dev).arg(model->errcodeToStr(code)));
+		}
 	}
 }
 
@@ -492,8 +501,9 @@ int MainWin::forceEjectWin(const char *dev)
 	msgBox.setWindowTitle(tr("Device Busy"));
 	msgBox.setIcon(QMessageBox::Warning);
 	msgBox.setWindowIcon(msgBox.iconPixmap());
-	msgBox.setText(tr("%1 is busy. Would you like to forcefully unmount it?").arg(dev));
-	msgBox.addButton(tr("Force unmount"), QMessageBox::AcceptRole);
+	msgBox.setText(tr("%1 is busy. Would you like to forcefully " \
+			  "unmount/eject it?").arg(dev));
+	msgBox.addButton(tr("Force"),  QMessageBox::AcceptRole);
 	msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
 
 	return (msgBox.exec());
