@@ -524,8 +524,8 @@ int MainWin::setSpeedWin(const char *dev, int *speed)
 	QVBoxLayout *layout = new QVBoxLayout(win);
 	QHBoxLayout *bbox   = new QHBoxLayout;
 
-	setWindowIcon(winIcon);
-	setWindowTitle(tr("Set reading speed"));
+	win->setWindowIcon(winIcon);
+	win->setWindowTitle(tr("Set reading speed"));
 
 	spin->setMaximum(72);
 	spin->setMinimum(1);
