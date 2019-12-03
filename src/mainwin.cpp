@@ -229,7 +229,7 @@ void MainWin::showDevAddedMsg(const char *devname)
 	static time_t  t0 = 0, t1;
 	static QString msg;
 
-	if (!trayIcon->supportsMessages())
+	if (!trayIcon || !trayIcon->supportsMessages())
 		return;
 	QString str = QString(tr("Storage device %1 added")).arg(devname);
 
