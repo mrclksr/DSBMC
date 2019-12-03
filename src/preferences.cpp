@@ -95,6 +95,8 @@ void Preferences::storeList(QString str)
 			if (esc)
 				esc = false;
 		} else {
+			if (esc)
+				esc = false;
 			buf[j++] = str[i];
 			buf.resize(j);
 		}
