@@ -464,10 +464,35 @@ void Model::startThread(Thread *thr)
 	thr->start();
 }
 
+int Model::mount(const dsbmc_dev_t *dev)
+{
+	return (execCommand(DSBMC_CMD_MOUNT, dev, false, -1));
+}
+
+int Model::unmount(const dsbmc_dev_t *dev, bool force)
+{
+	return (execCommand(DSBMC_CMD_UNMOUNT, dev, force, -1));
+}
+
+int Model::eject(const dsbmc_dev_t *dev, bool force)
+{
+	return (execCommand(DSBMC_CMD_EJECT, dev, force, -1));
+}
+
+int Model::open(const dsbmc_dev_t *dev, QString program)
+{
+	return (execCommand(DSBMC_CMD_OPEN, dev, program));
+}
+
+int Model::play(const dsbmc_dev_t *dev, QString program)
+{
+	return (execCommand(DSBMC_CMD_PLAY, dev, program));
+}
+
 int Model::execCommand(int command, const dsbmc_dev_t *dev, QString program)
 {
 	Thread *thr;
-	
+
 	if (dev == NULL)
 		return (-1);
 	if (!mutex->try_lock()) {

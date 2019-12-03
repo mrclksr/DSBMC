@@ -38,7 +38,6 @@
 #include "dsbcfg.h"
 #include "config.h"
 
-
 struct MenuAction {
 	int action;
 	int devid;
