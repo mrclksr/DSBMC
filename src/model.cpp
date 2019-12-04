@@ -357,6 +357,8 @@ void Model::checkCommandReturn(int command, const dsbmc_dev_t *dev, int code)
 	int row		= devRow(dev);
 	QModelIndex idx	= this->index(row);
 
+	mutex->unlock();
+
 	emit actionFinished(command, dev, code);
 	if (!idx.isValid())
 		return;
@@ -372,7 +374,9 @@ void Model::checkCommandReturn(int command, const dsbmc_dev_t *dev, int code,
 {
 	int row		= devRow(dev);
 	QModelIndex idx	= this->index(row);
-	
+
+	mutex->unlock();
+
 	emit actionFinished(command, dev, code, program);
 	if (!idx.isValid())
 		return;
@@ -387,7 +391,8 @@ int Model::querySize(const dsbmc_dev_t *dev, uint64_t *mediasize, uint64_t *free
 {
 	if (dev == NULL)
 		return (-1);
-	mutex->lock();
+	if (!mutex->try_lock())
+		return (-1);
 	if (dsbmc_size(dh, dev) != 0) {
 		mutex->unlock();
 		return (-1);
@@ -424,7 +429,8 @@ void Model::fetchEvents()
 	dsbmc_event_t	  e;
 	const dsbmc_dev_t *dev;
 	
-	mutex->lock();
+	if (!mutex->try_lock())
+		return;
 	while (dsbmc_fetch_event(dh, &e) > 0) {
 		switch (e.type) {
 		case DSBMC_EVENT_ADD_DEVICE:
@@ -509,7 +515,6 @@ int Model::execCommand(int command, const dsbmc_dev_t *dev, QString program)
 	else
 		thr = new Thread(mutex, command, dh, dev);
 	startThread(thr);
-	mutex->unlock();
 
 	return (0);
 }
@@ -526,7 +531,6 @@ int Model::execCommand(int command, const dsbmc_dev_t *dev, bool force, int spee
 	}
 	thr = new Thread(mutex, command, dh, dev, force, speed);
 	startThread(thr);
-	mutex->unlock();
 
 	return (0);
 }

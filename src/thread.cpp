@@ -34,7 +34,6 @@ Thread::run()
 	int	 code;
 	QProcess proc;
 	
-	mutex->lock();
 	switch (command) {
 	case DSBMC_CMD_OPEN:
 		if (!dev->mounted) {
@@ -44,7 +43,6 @@ Thread::run()
 	case DSBMC_CMD_PLAY:
 		program.replace("%d", dev->dev);
 		program.replace("%m", dev->mntpt != NULL ? dev->mntpt : "");
-		mutex->unlock();
 		proc.start(QString(program));
 		(void)proc.waitForStarted(-1);
 		if (proc.state() == QProcess::NotRunning)
@@ -68,7 +66,6 @@ Thread::run()
 		code = dsbmc_set_speed(handle, dev, speed);
 		break;
 	}
-	mutex->unlock();
 	emit commandReturned(command, dev, code);
 	quit();
 }
