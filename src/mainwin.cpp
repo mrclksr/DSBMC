@@ -463,13 +463,13 @@ void MainWin::quit()
 
 void MainWin::catchShutdown()
 {
-	errWin("DSBMD just shut down");
+	errWin(tr("DSBMD just shut down"));
 	quit();
 }
 
 void MainWin::catchLostConnection()
 {
-	errWin("Lost connection to DSBMD");
+	errWin(tr("Lost connection to DSBMD"));
 	quit();
 }
 
