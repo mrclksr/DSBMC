@@ -447,8 +447,13 @@ void Model::fetchEvents()
 		case DSBMC_EVENT_UNMOUNT:
 			updateDev(e.dev);
 			break;
+		case DSBMC_EVENT_SHUTDOWN:
+			emit dsbmdShutdown();
+			break;
 		}
 	}
+	if ((dsbmc_get_err(dh, NULL) & DSBMC_ERR_LOST_CONNECTION))
+		emit dsbmdLostConnection();
 	mutex->unlock();
 	for (int i = 0; i < devids.count(); i++) {
 		if ((dev = devFromId(devids.at(i))) != NULL)

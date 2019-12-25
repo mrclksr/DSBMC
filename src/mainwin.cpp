@@ -105,6 +105,9 @@ MainWin::MainWin(QWidget *parent) : QMainWindow(parent)
 	    SIGNAL(deviceAdded(const dsbmc_dev_t *)), this,
 	    SLOT(catchDeviceAdded(const dsbmc_dev_t *)));
 	connect(model, &Model::noDevices, this, &MainWin::hide);
+	connect(model, &Model::dsbmdShutdown, this, &MainWin::catchShutdown);
+	connect(model, &Model::dsbmdLostConnection, this,
+	    &MainWin::catchLostConnection);
 }
 
 void MainWin::checkForSysTray()
@@ -456,6 +459,18 @@ void MainWin::quit()
 	saveGeometry();
 	dsbcfg_write(PROGRAM, "config", cfg);
 	QApplication::quit();
+}
+
+void MainWin::catchShutdown()
+{
+	errWin("DSBMD just shut down");
+	quit();
+}
+
+void MainWin::catchLostConnection()
+{
+	errWin("Lost connection to DSBMD");
+	quit();
 }
 
 void MainWin::showConfigMenu()

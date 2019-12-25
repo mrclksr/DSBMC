@@ -77,6 +77,8 @@ signals:
 	void	 actionFinished(int action, const dsbmc_dev_t *, int code);
 	void	 actionFinished(int action, const dsbmc_dev_t *, int code,
 				QString program);
+	void	 dsbmdShutdown(void);
+	void	 dsbmdLostConnection(void);
 private slots:
 	void	 fetchEvents(void);
 	void	 checkCommandReturn(int command, const dsbmc_dev_t *dev,

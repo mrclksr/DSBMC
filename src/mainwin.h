@@ -60,6 +60,8 @@ public slots:
 	void	 checkReply(int action, const dsbmc_dev_t *dev, int code,
 		     QString program);
 	void	 execAction(QAction *action);
+	void	 catchShutdown(void);
+	void	 catchLostConnection(void);
 private:
 	int	 setSpeedWin(const char *dev, int *speed);
 	int	 forceEjectWin(const char *dev);
