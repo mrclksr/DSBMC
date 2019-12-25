@@ -104,6 +104,13 @@ main(int argc, char *argv[])
 	argc -= optind;
 	argv += optind;
 
+	QApplication app(argc, argv);
+	QTranslator translator;
+
+	if (translator.load(QLocale(), QLatin1String(PROGRAM),
+	    QLatin1String("_"), QLatin1String(LOCALE_PATH)))
+		app.installTranslator(&translator);
+
 	if ((pw = getpwuid(getuid())) == NULL)
 		qh_errx(0, EXIT_FAILURE, "getpwuid()");
 	/* Check if another instance is already running. */
@@ -125,12 +132,6 @@ main(int argc, char *argv[])
 	(void)signal(SIGQUIT, cleanup);
 	(void)signal(SIGHUP, cleanup);
 
-	QApplication app(argc, argv);
-	QTranslator translator;
-
-	if (translator.load(QLocale(), QLatin1String(PROGRAM),
-	    QLatin1String("_"), QLatin1String(LOCALE_PATH)))
-		app.installTranslator(&translator);
 	MainWin win;
 	if (!iflag)
 		win.show();
