@@ -42,8 +42,9 @@ static char path_lock[PATH_MAX] = { 0 };
 void
 usage()
 {
-	(void)printf("Usage: %s [-ih] [<disk image> ...]\n" \
-		     "   -i: Start %s as tray icon\n", PROGRAM, PROGRAM);
+	(void)printf("Usage: %s [-ih] [-f WxH] [<disk image> ...]\n" \
+		     "   -i: Start %s as tray icon\n" \
+		     "   -f: Set fixed window size\n", PROGRAM, PROGRAM);
 	exit(EXIT_FAILURE);
 }
 
@@ -85,17 +86,26 @@ cleanup(int /* unused */)
 int
 main(int argc, char *argv[])
 {
-	int	      ch, lockfd, error;
-	bool	      iflag;
+	int	      ch, lockfd, error, width, height;
+	char	      *p;
+	bool	      iflag, fflag;
 	struct passwd *pw;
 
-	iflag = false;
-	while ((ch = getopt(argc, argv, "ih")) != -1) {
+	iflag = fflag = false;
+	while ((ch = getopt(argc, argv, "ihf:")) != -1) {
 		switch (ch) {
 		case 'i':
 			/* Start as tray icon. */
 			iflag = true;
                         break;
+		case 'f':
+			fflag = true;
+			if ((p = strchr(optarg, 'x')) == NULL)
+				usage();
+			*p++ = '\0';
+			width  = strtol(optarg, NULL, 10);
+			height = strtol(p, NULL, 10);
+			break;
 		case '?':
 		case 'h':
 			usage();
@@ -133,6 +143,8 @@ main(int argc, char *argv[])
 	(void)signal(SIGHUP, cleanup);
 
 	MainWin win;
+	if (fflag)
+		win.setFixedSize(width, height);
 	if (!iflag)
 		win.show();
 	error = app.exec();
