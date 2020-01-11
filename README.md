@@ -16,8 +16,8 @@ devel/qt5-qmake, x11-toolkits/qt5-gui, and x11-toolkits/qt5-widgets
 
 ## Building and installation
 
-	# git clone https://github.com/mrclksr/DSBMC-Qt
-	# cd DSBMC-Qt && qmake && make
+	# git clone https://github.com/mrclksr/DSBMC.git
+	# cd DSBMC && qmake && make
 	# make install
 
 ## USAGE
