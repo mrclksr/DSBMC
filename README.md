@@ -20,3 +20,11 @@ devel/qt5-qmake, x11-toolkits/qt5-gui, and x11-toolkits/qt5-widgets
 	# cd DSBMC-Qt && qmake && make
 	# make install
 
+## USAGE
+**dsbmc** [-hi] [*disk image* ...]
+
+If a disk image is given, a *md(4)* device is created from it.
+
+## Options
+**-i**
+>> Start **dsbmc** as tray icon
