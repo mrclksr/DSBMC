@@ -43,7 +43,7 @@
 class MainWin : public QMainWindow {
         Q_OBJECT
 public:
-	MainWin(QWidget *parent = 0);
+	MainWin(int fifo, QWidget *parent = 0);
 	void	 closeEvent(QCloseEvent *event);
 	QMenu	 *menu();
 protected:
@@ -78,6 +78,7 @@ private:
 	void	 loadTrayIconPic(void);
 	QString	 playCommand(const dsbmc_dev_t *dev);
 private slots:
+	void	 handleFIFO(int fifo);
 	void	 showDevAddedMsg(const char *devname);
 	void	 catchDeviceAdded(const dsbmc_dev_t *dev);
 	void	 checkForSysTray(void);

@@ -28,16 +28,19 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
+#include <err.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <signal.h>
 #include <pwd.h>
 
 #include "mainwin.h"
 #include "qt-helper/qt-helper.h"
 
-#define PATH_LOCK ".dsbmc.lock"
+#define PATH_FIFO ".dsbmc.fifo"
 
-static char path_lock[PATH_MAX] = { 0 };
+static char path_fifo[PATH_MAX] = { 0 };
 
 void
 usage()
@@ -78,14 +81,14 @@ cleanup(int /* unused */)
 	if (block == 1)
 		return;
 	block = 1;
-	(void)unlink(path_lock);
+	(void)unlink(path_fifo);
 	exit(EXIT_SUCCESS);
 }
 
 int
 main(int argc, char *argv[])
 {
-	int	      ch, lockfd, error;
+	int	      ch, error, fifo;
 	bool	      iflag;
 	struct passwd *pw;
 
@@ -116,18 +119,32 @@ main(int argc, char *argv[])
 
 	if ((pw = getpwuid(getuid())) == NULL)
 		qh_errx(0, EXIT_FAILURE, "getpwuid()");
-	/* Check if another instance is already running. */
-	(void)snprintf(path_lock, sizeof(path_lock), "%s/%s", pw->pw_dir,
-	    PATH_LOCK);
+	(void)snprintf(path_fifo, sizeof(path_fifo), "%s/%s", pw->pw_dir,
+	    PATH_FIFO);
 	endpwent();
-	if ((lockfd = open(path_lock, O_WRONLY | O_CREAT, 0600)) == -1)
-		qh_errx(0, EXIT_FAILURE, "open(%s)", path_lock);
-	if (flock(lockfd, LOCK_EX | LOCK_NB) == -1) {
-		if (errno == EWOULDBLOCK) {
+	if (mkfifo(path_fifo, S_IWUSR | S_IRUSR) == -1 && errno != EEXIST)
+		err(EXIT_FAILURE, "mkfifo()");
+	(void)chmod(path_fifo, S_IRUSR | S_IWUSR);
+	if ((fifo = open(path_fifo, O_WRONLY | O_NONBLOCK)) != -1) {
+		/* Another instance of dsbmc is already running. */
+		if (argc == 0) {
+			/*
+			 * Write a byte to the FIFO to make the other
+			 * instance's window show.
+			 */
+			(void)write(fifo, "x", 1);
+		} else
 			(void)create_mddev(argc, argv);
-			exit(EXIT_SUCCESS);
-		}
-		qh_errx(0, EXIT_FAILURE, "flock(%s)", path_lock);
+		exit(EXIT_SUCCESS);
+	} else {
+		/*
+		 * Open the FIFO for reading and writing to prevent select()
+		 * from returning with a value > 0 if the last writer has
+		 * closed its end.
+		 */
+		(void)close(fifo);
+		if ((fifo = open(path_fifo, O_RDWR | O_NONBLOCK)) == -1)
+			err(1, "open(%s)", path_fifo);
 	}
 	(void)create_mddev(argc, argv);
 	(void)signal(SIGINT, cleanup);
@@ -135,7 +152,7 @@ main(int argc, char *argv[])
 	(void)signal(SIGQUIT, cleanup);
 	(void)signal(SIGHUP, cleanup);
 
-	MainWin win;
+	MainWin win(fifo);
 	if (!iflag)
 		win.show();
 	error = app.exec();

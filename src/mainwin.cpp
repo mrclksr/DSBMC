@@ -29,11 +29,12 @@
 #include <QMessageBox>
 #include <QStatusBar>
 #include <errno.h>
+#include <unistd.h>
 
 #include "mainwin.h"
 #include "qt-helper.h"
 
-MainWin::MainWin(QWidget *parent) : QMainWindow(parent)
+MainWin::MainWin(int fifo, QWidget *parent) : QMainWindow(parent)
 {
 	quitIcon      = qh_loadIcon("application-exit", 0);
 	prefsIcon     = qh_loadIcon("preferences-system", 0);
@@ -57,10 +58,10 @@ MainWin::MainWin(QWidget *parent) : QMainWindow(parent)
 	wWidth	= &dsbcfg_getval(cfg, CFG_WIDTH).integer;
 	hHeight	= &dsbcfg_getval(cfg, CFG_HEIGHT).integer;
 	model   = new Model(cfg, this);
-
 	QItemSelectionModel *selections = new QItemSelectionModel(model);
+	QSocketNotifier	*snFIFO	= new QSocketNotifier(fifo,
+		QSocketNotifier::Read, this);
 	statusBar()->addPermanentWidget(statusLabel);
-	
 	list->setContentsMargins(15, 15, 15, 15);
 	model->init();
 	list->setModel(model);
@@ -108,6 +109,7 @@ MainWin::MainWin(QWidget *parent) : QMainWindow(parent)
 	connect(model, &Model::dsbmdShutdown, this, &MainWin::catchShutdown);
 	connect(model, &Model::dsbmdLostConnection, this,
 	    &MainWin::catchLostConnection);
+	connect(snFIFO, SIGNAL(activated(int)), this, SLOT(handleFIFO(int)));
 }
 
 void MainWin::checkForSysTray()
@@ -185,6 +187,13 @@ void MainWin::trayClicked(QSystemTrayIcon::ActivationReason reason)
 		else
 			show();
 	}
+}
+
+void MainWin::handleFIFO(int fd)
+{
+	char c;
+	(void)read(fd, &c, 1);
+	show();
 }
 
 void MainWin::setIconSize(QSize size)
