@@ -29,6 +29,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <err.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -53,6 +54,7 @@ usage()
 void
 create_mddev(int npaths, char **paths)
 {
+	char	       full_path[PATH_MAX + 1];
 	static dsbmc_t *dh = NULL;
 
 	if (dh == NULL) {
@@ -62,7 +64,11 @@ create_mddev(int npaths, char **paths)
 			qh_errx(0, EXIT_FAILURE, "%s", dsbmc_errstr(dh));
 	}
 	while (npaths-- > 0) {
-		if (dsbmc_mdattach(dh, *paths) == -1) {
+		if (realpath(*paths, full_path) == NULL) {
+			qh_warn(0, "realpath(%s)", *paths);
+			continue;
+		}
+		if (dsbmc_mdattach(dh, full_path) == -1) {
 			qh_warnx(0, "dsbmc_mdattach(%s): %s",
 			    *paths, dsbmc_errstr(dh));
 		}
