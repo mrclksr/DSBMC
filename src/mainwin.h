@@ -51,6 +51,7 @@ protected:
 public slots:
 	void	 catchSelectionChanged(const QItemSelection &selected,
 			const QItemSelection &deselected);
+	void	 toggleWin(void);
 	void	 showConfigMenu(void);
 	void	 showContextMenu(QPoint pos);
 	void	 quit(void);

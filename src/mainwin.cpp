@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QSpinBox>
 #include <QMenuBar>
+#include <QMouseEvent>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <errno.h>
@@ -157,14 +158,19 @@ void MainWin::createTrayIcon()
 		return;
 	loadTrayIconPic();
 
-	QMenu	*menu	     = new QMenu(this);
-	QAction *quitAction  = new QAction(quitIcon, tr("&Quit"), this);
-	QAction *prefsAction = new QAction(prefsIcon, tr("&Preferences"), this);
-	
+	QMenu	*menu	      = new QMenu(this);
+	QAction *quitAction   = new QAction(quitIcon, tr("&Quit"), this);
+	QAction *prefsAction  = new QAction(prefsIcon, tr("&Preferences"),
+					    this);
+	QAction *toggleAction = new QAction(trayIconPic, tr("Show/hide window"),
+					    this);
+	connect(toggleAction, &QAction::triggered, this,
+		&MainWin::toggleWin);
 	connect(quitAction, &QAction::triggered, this, &MainWin::quit);
 	connect(prefsAction, &QAction::triggered, this,
 		&MainWin::showConfigMenu);
 
+	menu->addAction(toggleAction);
 	menu->addAction(prefsAction);
 	menu->addAction(quitAction);
 
@@ -181,12 +187,16 @@ void MainWin::createTrayIcon()
 void MainWin::trayClicked(QSystemTrayIcon::ActivationReason reason)
 {
 	if (reason == QSystemTrayIcon::Trigger || 
-	    reason == QSystemTrayIcon::DoubleClick) {
-		if (isVisible())
-			hide();
-		else
-			show();
-	}
+	    reason == QSystemTrayIcon::DoubleClick)
+		toggleWin();
+}
+
+void MainWin::toggleWin()
+{
+	if (isVisible())
+		hide();
+	else
+		show();
 }
 
 void MainWin::handleFIFO(int fd)
