@@ -23,8 +23,8 @@
  */
 
 #include <QProcess>
-#include <QDebug>
 #include <errno.h>
+#include <paths.h>
 
 #include "thread.h"
 
@@ -33,7 +33,7 @@ Thread::run()
 {
 	int	 code;
 	QProcess proc;
-	
+
 	switch (command) {
 	case DSBMC_CMD_OPEN:
 		if (!dev->mounted) {
@@ -43,7 +43,7 @@ Thread::run()
 	case DSBMC_CMD_PLAY:
 		program.replace("%d", dev->dev);
 		program.replace("%m", dev->mntpt != NULL ? dev->mntpt : "");
-		proc.start(QString(program));
+		proc.start(_PATH_BSHELL, QStringList() << "-c" << program);
 		(void)proc.waitForStarted(-1);
 		if (proc.state() == QProcess::NotRunning)
 			code = errno;
