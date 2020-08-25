@@ -76,12 +76,12 @@ MainWin::MainWin(int fifo, QWidget *parent) : QMainWindow(parent)
 	list->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 	setIconSize(QSize(48, 48));
 	setCentralWidget(list);
-	
+
 	createMainMenu();
 
 	qApp->installEventFilter(this);
 	qApp->setQuitOnLastWindowClosed(false);
-	
+
 	setWindowIcon(winIcon);
 	setWindowTitle(tr("DSBMC - DSBMD Client"));
 
@@ -288,7 +288,7 @@ void MainWin::catchDeviceAdded(const dsbmc_dev_t *dev)
 void MainWin::checkReply(int action, const dsbmc_dev_t *dev, int code)
 {
 	stopBusyMessage();
-	
+
 	if (action == DSBMC_CMD_MOUNT || action == DSBMC_CMD_UNMOUNT) {
 		if (code == 0) {
 			showSize(dev);
@@ -377,7 +377,7 @@ void MainWin::execAction(QAction *action)
 	QString		   msg, devname;
 	MenuAction	   ma  = action->data().value<MenuAction>();
 	const dsbmc_dev_t *dev = model->devFromId(ma.devid);
-	
+
 	if (dev == NULL)
 		return;
 	switch (ma.action) {
@@ -447,7 +447,7 @@ void MainWin::moveEvent(QMoveEvent *event)
 
 bool MainWin::eventFilter(QObject *obj, QEvent *event)
 {
-	
+
 	if (obj != list->viewport())
 		return QObject::eventFilter(obj, event);
 	QMouseEvent *ev = static_cast<QMouseEvent *>(event);
@@ -587,7 +587,7 @@ int MainWin::setSpeedWin(const char *dev, int *speed)
 void MainWin::showSize(const dsbmc_dev_t *dev)
 {
 	uint64_t mediasize, bytesfree;
-	
+
 	if (model->querySize(dev, &mediasize, &bytesfree))
 		return;
 	QString status = QString("%1 Capacity: %2 Free: %3")

@@ -85,7 +85,7 @@ bool Model::hideDev(const dsbmc_dev_t *dev)
 {
 	bool hide;
 	char **v;
-	
+
 	for (hide = false, v = dsbcfg_getval(cfg, CFG_HIDE).strings;
 	    !hide && v != NULL && *v != NULL; v++) {
 		if (strncmp(*v, _PATH_DEV, sizeof(_PATH_DEV) - 1) != 0) {
@@ -289,7 +289,7 @@ QAction *Model::menuAction(const dsbmc_dev_t *dev, int command)
 	bool	enabled = true;
 	QIcon	icon;
 	QString	name;
-	
+
 	switch (command) {
 	case DSBMC_CMD_OPEN:
 		icon = icon_open;
@@ -428,7 +428,7 @@ void Model::fetchEvents()
 	QList<int>	  devids;
 	dsbmc_event_t	  e;
 	const dsbmc_dev_t *dev;
-	
+
 	if (!mutex->try_lock())
 		return;
 	while (dsbmc_fetch_event(dh, &e) > 0) {

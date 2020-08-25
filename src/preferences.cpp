@@ -63,7 +63,7 @@ void Preferences::storeList(QString str)
 	QString	     buf;
 	QStringList  list;
 	dsbcfg_val_t val;
-	
+
 	quote = esc = false;
 	for (i = 0, j = 0; i < str.size(); i++) {
 		if (str[i] == '"') {
