@@ -25,6 +25,7 @@
 #pragma once
 #include <QDialog>
 #include <QLabel>
+#include <QComboBox>
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QVBoxLayout>
@@ -45,12 +46,14 @@ public slots:
 	void	acceptSlot();
 private:
 	void	storeList(QString str);
+	void	createThemeComboBox(void);
 	QString	quoteString(char *str);
 	QWidget *commandsTab(void);
 	QWidget *generalSettingsTab(void);
 	QFrame	*mkLine(void);
 private slots:
 	void	openIcon(void);
+	void	changeTheme(int index);
 private:
 	dsbcfg_t  *cfg;
 	QCheckBox *cdda_autoplay;
@@ -60,6 +63,7 @@ private:
 	QCheckBox *hideOnOpen;
 	QCheckBox *notify;
 	QCheckBox *popup;
+	QComboBox *themeBox;
 	QLineEdit *fm_edit;
 	QLineEdit *dvd_edit;
 	QLineEdit *vcd_edit;

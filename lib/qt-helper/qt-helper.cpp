@@ -33,7 +33,6 @@
 #include "qt-helper.h"
 
 static char msgbuf[1024];
-
 enum Icon { WarningIcon, ErrorIcon };
 
 QIcon
@@ -43,24 +42,58 @@ qh_loadStockIcon(QStyle::StandardPixmap pm, QWidget *parent)
 }
 
 QIcon
-qh_loadThemeIcon(const QString &name)
-{
-	return (QIcon::fromTheme(name));
-}
-
-QIcon
 qh_loadIcon(const char *name, ...)
 {
-	QIcon	   icon;
 	va_list	   ap;
 	const char *s;
 
 	va_start(ap, name);
 	for (s = name; s != NULL || (s = va_arg(ap, char *)); s = NULL) {
-		icon = QIcon::fromTheme(s);
-		if (!icon.isNull())
-			return (icon);
+		if (!QIcon::hasThemeIcon(s))
+			continue;
+		QIcon icon = QIcon::fromTheme(s);
+		if (icon.isNull())
+			continue;
+		if (icon.name().isEmpty() || icon.name().length() < 1)
+			continue;
+		return (icon);
 	}
+	return (QIcon());
+}
+
+/*
+ * Return a QIcon from the given theme that doesn't change when the
+ * current icon theme changes.
+ */
+QIcon
+qh_loadStaticIconFromTheme(const char *theme, const char *name, ...)
+{
+	va_list	   ap;
+	QIcon	   sIcon;
+	QString	   curTheme = QIcon::themeName();
+	const char *s;
+
+	if (theme != NULL)
+		QIcon::setThemeName(theme);
+	va_start(ap, name);
+	for (s = name; s != NULL || (s = va_arg(ap, char *)); s = NULL) {
+		if (!QIcon::hasThemeIcon(s))
+			continue;
+		QIcon icon = QIcon::fromTheme(s);
+		if (icon.isNull())
+			continue;
+		if (icon.name().isEmpty() || icon.name().length() < 1)
+			continue;
+		QList<QSize> sizes = icon.availableSizes();
+		for (int i = 0; i < sizes.size(); i++) {
+			QPixmap pix = icon.pixmap(sizes.at(i));
+			sIcon.addPixmap(pix);
+		}
+		QIcon::setThemeName(curTheme);
+		return (sIcon);
+	}
+	QIcon::setThemeName(curTheme);
+
 	return (QIcon());
 }
 

@@ -35,6 +35,17 @@
 #include "mainwin.h"
 #include "qt-helper.h"
 
+#define ICON_NAMES \
+	"drive-removable-media-usb-pendrive", \
+	"drive-removable-media-usb-panel", \
+	"drive-harddisk-usb-panel", \
+	"drive-removable-media-panel", \
+	"drive-harddisk-panel", \
+	"drive-removable-media-usb", \
+	"drive-harddisk-usb", \
+	"drive-removable-media", \
+	"drive-harddisk"
+
 MainWin::MainWin(int fifo, QWidget *parent) : QMainWindow(parent)
 {
 	quitIcon      = qh_loadIcon("application-exit", 0);
@@ -42,11 +53,8 @@ MainWin::MainWin(int fifo, QWidget *parent) : QMainWindow(parent)
 	statusLabel   = new QLabel(this);
 	trayTimer     = new QTimer(this);
 	list	      = new QListView(this);
-	QIcon winIcon = qh_loadIcon("drive-removable-media-usb-pendrive",
-				    "drive-removable-media-usb",
-				    "drive-harddisk-usb",
-				    "drive-removable-media",
-				    "drive-harddisk", 0);
+	QIcon winIcon = qh_loadIcon(ICON_NAMES, 0);
+
 	cfg = dsbcfg_read(PROGRAM, "config", vardefs, CFG_NVARS);
 	if (cfg == NULL && errno == ENOENT) {
 		cfg = dsbcfg_new(NULL, vardefs, CFG_NVARS);
@@ -133,21 +141,9 @@ void MainWin::checkForSysTray()
 
 void MainWin::loadTrayIconPic()
 {
-	char *fname = dsbcfg_getval(cfg, CFG_TRAY_ICON).string;
+	char *trayTheme = dsbcfg_getval(cfg, CFG_TRAY_THEME).string;
 
-	if (fname != NULL && *fname != '\0')
-		trayIconPic = QIcon(fname);
-	if (trayIconPic.isNull() || fname == NULL || *fname == '\0') {
-		trayIconPic = qh_loadIcon("drive-removable-media-usb-pendrive",
-					  "drive-removable-media-usb-panel",
-					  "drive-harddisk-usb-panel",
-					  "drive-removable-media-panel",
-					  "drive-harddisk-panel",
-					  "drive-removable-media-usb",
-					  "drive-harddisk-usb",
-					  "drive-removable-media",
-					  "drive-harddisk", 0);
-	}
+	trayIconPic = qh_loadStaticIconFromTheme(trayTheme, ICON_NAMES, 0);
 }
 
 void MainWin::createTrayIcon()
@@ -157,12 +153,13 @@ void MainWin::createTrayIcon()
 	if (!QSystemTrayIcon::isSystemTrayAvailable())
 		return;
 	loadTrayIconPic();
+	QIcon toggleIcon = qh_loadIcon(ICON_NAMES, 0);
 
 	QMenu	*menu	      = new QMenu(this);
 	QAction *quitAction   = new QAction(quitIcon, tr("&Quit"), this);
 	QAction *prefsAction  = new QAction(prefsIcon, tr("&Preferences"),
 					    this);
-	QAction *toggleAction = new QAction(trayIconPic, tr("Show/hide window"),
+	QAction *toggleAction = new QAction(toggleIcon, tr("Show/hide window"),
 					    this);
 	connect(toggleAction, &QAction::triggered, this,
 		&MainWin::toggleWin);

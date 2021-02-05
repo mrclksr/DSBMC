@@ -24,6 +24,8 @@
 
 #include <QGridLayout>
 #include <QFileDialog>
+#include <QDirIterator>
+#include <QGroupBox>
 
 #include "preferences.h"
 #include "qt-helper/qt-helper.h"
@@ -128,18 +130,68 @@ QString Preferences::quoteString(char *str)
 
 	for (i = 1; str != NULL && *str != '\0'; str++) {
 		if (*str == '"' || *str == '\\')
-			buf[i++] = '\\'; buf[i++] = *str;
+			buf[i++] = '\\';
+		buf[i++] = *str;
 	}
 	buf[i++] = '"'; buf.resize(i);
 
 	return (buf);
 }
 
+void Preferences::createThemeComboBox()
+{
+	themeBox	  = new QComboBox;
+	QStringList paths = QIcon::themeSearchPaths();
+	QStringList names;
+	QString themeName(dsbcfg_getval(cfg, CFG_TRAY_THEME).string);
+
+	for (int i = 0; i < paths.size(); i++) {
+		QDirIterator it(paths.at(i));
+		while (it.hasNext()) {
+			QString indexPath = QString("%1/index.theme").arg(it.next());
+			if (!it.fileInfo().isDir())
+				continue;
+			QString name = it.fileName();
+			if (name == "." || name == "..")
+				continue;
+			QFile indexFile(indexPath);
+			if (!indexFile.exists())
+				continue;
+			indexFile.close();
+			names.append(name);
+		}
+	}
+	names.sort(Qt::CaseInsensitive);
+	names.removeDuplicates();
+	themeBox->addItems(names);
+
+	int index = themeBox->findText(themeName, Qt::MatchExactly);
+	if (index != -1)
+		themeBox->setCurrentIndex(index);
+	connect(themeBox, SIGNAL(currentIndexChanged(int)), this,
+	    SLOT(changeTheme(int)));
+}
+
+void Preferences::changeTheme(int index)
+{
+	dsbcfg_val_t val;
+
+	if (index == -1)
+		return;
+	val.string = themeBox->currentText().toLatin1().data();
+	dsbcfg_setval(cfg, CFG_TRAY_THEME, val);
+}
+
 QWidget *Preferences::generalSettingsTab()
 {
 	QWidget	    *tab    = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout(tab);
-	QGridLayout *grid   = new QGridLayout;
+	QVBoxLayout *bhvBox = new QVBoxLayout;
+	QVBoxLayout *ignBox = new QVBoxLayout;
+	QVBoxLayout *tryBox = new QVBoxLayout;
+	QGroupBox   *tryGrp = new QGroupBox(tr("Tray Icon Theme"));
+	QGroupBox   *ignGrp = new QGroupBox(tr("Ignore Devices"));
+	QGroupBox   *bhvGrp = new QGroupBox(tr("Behavior"));
 	ignore_edit	    = new QLineEdit;
 	icon_edit	    = new QLineEdit;
 	hideOnOpen	    = new QCheckBox(tr("Hide main window after "   \
@@ -148,6 +200,7 @@ QWidget *Preferences::generalSettingsTab()
 					       "device was added"));
 	popup		    = new QCheckBox(tr("Show main window when a "  \
 					       "device was added"));
+	createThemeComboBox();
 	hideOnOpen->setCheckState(
 	    dsbcfg_getval(cfg, CFG_HIDE_ON_OPEN).boolean ? Qt::Checked : \
 		Qt::Unchecked);
@@ -157,27 +210,22 @@ QWidget *Preferences::generalSettingsTab()
 	popup->setCheckState(
 	    dsbcfg_getval(cfg, CFG_POPUP).boolean ? Qt::Checked : \
 		Qt::Unchecked);
-	layout->addWidget(hideOnOpen);
-	layout->addWidget(notify);
-	layout->addWidget(popup);
-	layout->addWidget(mkLine());
 
-	QPushButton *openFileBt = new QPushButton(tr("Browse files"));
-	connect(openFileBt, &QPushButton::clicked, this, &Preferences::openIcon);
+	bhvBox->addWidget(hideOnOpen);
+	bhvBox->addWidget(notify);
+	bhvBox->addWidget(popup);
+	bhvGrp->setLayout(bhvBox);
 
-	icon_edit->setText(QString(dsbcfg_getval(cfg, CFG_TRAY_ICON).string));
-	grid->addWidget(new QLabel(tr("Tray icon:")), 0, 0);
-	grid->addWidget(icon_edit, 0, 1);
-	grid->addWidget(openFileBt, 0, 2);
+	tryBox->addWidget(themeBox);
+	tryGrp->setLayout(tryBox);
 
-	grid->addWidget(new QLabel(tr("Ignore devices and\nmount points:")),
-			1, 0);
-	grid->addWidget(ignore_edit, 1, 1, 1, 3);
-	grid->addWidget(new QLabel(tr("Example: <tt>/dev/da0s1, " \
-				      "EFISYS, /var/run/user/1001/gvfs</tt>")),
-			2, 1);
+	ignBox->addWidget(ignore_edit);
+	ignBox->addWidget(new QLabel(tr("Example: <tt>/dev/da0s1, " \
+				        "EFISYS, /var/run/user/1001/gvfs</tt>")));
 	ignore_edit->setToolTip("A comma-separated list of device names, " \
 				"mount points, and volume IDs to ignore");
+	ignGrp->setLayout(ignBox);
+
 	QString ignoreList;
 	for (char **v = dsbcfg_getval(cfg, CFG_HIDE).strings;
 	    v != NULL && *v != NULL; v++) {
@@ -186,7 +234,11 @@ QWidget *Preferences::generalSettingsTab()
 		ignoreList.append(quoteString(*v));
 	}
 	ignore_edit->setText(ignoreList);
-	layout->addLayout(grid);
+
+	layout->addWidget(bhvGrp);
+	layout->addWidget(ignGrp);
+	layout->addWidget(tryGrp);
+
 	layout->addStretch(1);
 
 	return (tab);
@@ -194,6 +246,7 @@ QWidget *Preferences::generalSettingsTab()
 
 QWidget *Preferences::commandsTab()
 {
+	int	    i;
 	QLineEdit   *edit;
 	QCheckBox   *cb;
 	QWidget	    *tab    = new QWidget;
@@ -229,7 +282,7 @@ QWidget *Preferences::commandsTab()
 		  &svcd_edit,		      &svcd_autoplay
 		}
 	};
-	for (int i = 0; i < 5; i++) {
+	for (i = 0; i < 5; i++) {
 		edit = new QLineEdit(QString(dsbcfg_getval(cfg,
 				settings[i].cfg_id_prog).string));
 		edit->setToolTip(toolTip);
@@ -245,6 +298,9 @@ QWidget *Preferences::commandsTab()
 		layout->addWidget(new QLabel(settings[i].label), i, 0);
 		layout->addWidget(*settings[i].edit, i, 1);
 	}
+	layout->setColumnStretch(1, 1);
+	layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding,
+	    QSizePolicy::Expanding), i + 1, 0);
 	return (tab);
 }
 
@@ -305,9 +361,6 @@ void Preferences::acceptSlot()
 
 	val.boolean = popup->checkState() == Qt::Checked ? true : false;
 	dsbcfg_setval(cfg, CFG_POPUP, val);
-
-	val.string = icon_edit->text().toLatin1().data();
-	dsbcfg_setval(cfg, CFG_TRAY_ICON, val);
 
 	storeList(ignore_edit->text());
 
