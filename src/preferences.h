@@ -63,6 +63,7 @@ private:
 	QCheckBox *hideOnOpen;
 	QCheckBox *notify;
 	QCheckBox *popup;
+	QCheckBox *automount;
 	QComboBox *themeBox;
 	QLineEdit *fm_edit;
 	QLineEdit *dvd_edit;

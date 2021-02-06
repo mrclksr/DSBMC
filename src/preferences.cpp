@@ -200,6 +200,8 @@ QWidget *Preferences::generalSettingsTab()
 					       "device was added"));
 	popup		    = new QCheckBox(tr("Show main window when a "  \
 					       "device was added"));
+	automount	    = new QCheckBox(tr("Automatically mount devices"));
+
 	createThemeComboBox();
 	hideOnOpen->setCheckState(
 	    dsbcfg_getval(cfg, CFG_HIDE_ON_OPEN).boolean ? Qt::Checked : \
@@ -210,10 +212,13 @@ QWidget *Preferences::generalSettingsTab()
 	popup->setCheckState(
 	    dsbcfg_getval(cfg, CFG_POPUP).boolean ? Qt::Checked : \
 		Qt::Unchecked);
-
+	automount->setCheckState(
+	    dsbcfg_getval(cfg, CFG_AUTOMOUNT).boolean ? Qt::Checked : \
+		Qt::Unchecked);
 	bhvBox->addWidget(hideOnOpen);
 	bhvBox->addWidget(notify);
 	bhvBox->addWidget(popup);
+	bhvBox->addWidget(automount);
 	bhvGrp->setLayout(bhvBox);
 
 	tryBox->addWidget(themeBox);
@@ -361,6 +366,9 @@ void Preferences::acceptSlot()
 
 	val.boolean = popup->checkState() == Qt::Checked ? true : false;
 	dsbcfg_setval(cfg, CFG_POPUP, val);
+
+	val.boolean = automount->checkState() == Qt::Checked ? true : false;
+	dsbcfg_setval(cfg, CFG_AUTOMOUNT, val);
 
 	storeList(ignore_edit->text());
 

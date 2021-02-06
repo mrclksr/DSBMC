@@ -280,6 +280,10 @@ void MainWin::catchDeviceAdded(const dsbmc_dev_t *dev)
 		show();
 	if ((dev->cmds & DSBMC_CMD_PLAY))
 		autoplay(dev);
+	if (dsbcfg_getval(this->cfg, CFG_AUTOMOUNT).boolean) {
+		if ((dev->cmds & DSBMC_CMD_MOUNT))
+			model->mount(dev);
+	}
 }
 
 void MainWin::checkReply(int action, const dsbmc_dev_t *dev, int code)

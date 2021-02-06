@@ -131,6 +131,8 @@ void Model::init()
 	for (int i = 0; (dev = dsbmc_next_dev(dh, &i, false)) != NULL;) {
 		if (hideDev(dev))
 			continue;
+		if (dsbcfg_getval(this->cfg, CFG_AUTOMOUNT).boolean)
+			dsbmc_mount(dh, dev);
 		addDevice(dev);
 	}
 	mutex	 = new QMutex;
@@ -138,6 +140,7 @@ void Model::init()
 				       QSocketNotifier::Read, this);
 	connect(swatcher, &QSocketNotifier::activated, this,
 	    &Model::fetchEvents);
+
 }
 
 int Model::devRow(const dsbmc_dev_t *dev)

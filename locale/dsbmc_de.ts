@@ -24,134 +24,134 @@
         <translation>Speichermedium</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="295"/>
+        <location filename="../src/mainwin.cpp" line="299"/>
         <source>Couldn&apos;t mount %1: %2</source>
         <translation>Konnte %1 nicht einhängen: %2</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="307"/>
+        <location filename="../src/mainwin.cpp" line="311"/>
         <source>Couldn&apos;t unmount %1: %2</source>
         <translation>Konnte %1 nicht aushängen: %2</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="321"/>
+        <location filename="../src/mainwin.cpp" line="325"/>
         <source>Couldn&apos;t eject %1: %2</source>
         <translation>Konnte %1 nicht auswerfen: %2</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="336"/>
+        <location filename="../src/mainwin.cpp" line="340"/>
         <source>Couldn&apos;t start %1: %2</source>
         <translation>Konnte %1 nicht starten: %2</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="385"/>
-        <location filename="../src/mainwin.cpp" line="463"/>
+        <location filename="../src/mainwin.cpp" line="389"/>
+        <location filename="../src/mainwin.cpp" line="467"/>
         <source>Opening %1. Please wait</source>
         <translation>Öffne %1. Bitte warten</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="398"/>
+        <location filename="../src/mainwin.cpp" line="402"/>
         <source>Mounting %1. Please wait</source>
         <translation>Hänge %1 ein. Bitte warten</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="534"/>
+        <location filename="../src/mainwin.cpp" line="538"/>
         <source>Device Busy</source>
         <translation>Gerät blockiert</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="537"/>
+        <location filename="../src/mainwin.cpp" line="541"/>
         <source>%1 is busy. Would you like to forcefully unmount/eject it?</source>
         <translation>%1 is blockiert. Möchten Sie das Aushängen/Auswerfen erzwingen?</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="539"/>
+        <location filename="../src/mainwin.cpp" line="543"/>
         <source>Force</source>
         <translation>Erzwingen</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="540"/>
+        <location filename="../src/mainwin.cpp" line="544"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="553"/>
+        <location filename="../src/mainwin.cpp" line="557"/>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="554"/>
+        <location filename="../src/mainwin.cpp" line="558"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="559"/>
+        <location filename="../src/mainwin.cpp" line="563"/>
         <source>Set reading speed</source>
         <translation>Setze Lesegeschwindigkeit</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="566"/>
+        <location filename="../src/mainwin.cpp" line="570"/>
         <source>Set the reading speed of %1</source>
         <translation>Setze Lesegeschwindigkeit von %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="302"/>
-        <location filename="../src/mainwin.cpp" line="403"/>
+        <location filename="../src/mainwin.cpp" line="306"/>
+        <location filename="../src/mainwin.cpp" line="407"/>
         <source>Unmounting %1. Please wait</source>
         <translation>Hänge %1 aus. Bitte warten</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="316"/>
-        <location filename="../src/mainwin.cpp" line="408"/>
+        <location filename="../src/mainwin.cpp" line="320"/>
+        <location filename="../src/mainwin.cpp" line="412"/>
         <source>Ejecting %1. Please wait</source>
         <translation>Werfe %1 aus. Bitte warten</translation>
     </message>
     <message>
         <location filename="../src/mainwin.cpp" line="159"/>
-        <location filename="../src/mainwin.cpp" line="505"/>
+        <location filename="../src/mainwin.cpp" line="509"/>
         <source>&amp;Quit</source>
         <translation>&amp;Beenden</translation>
     </message>
     <message>
         <location filename="../src/mainwin.cpp" line="160"/>
-        <location filename="../src/mainwin.cpp" line="506"/>
+        <location filename="../src/mainwin.cpp" line="510"/>
         <source>&amp;Preferences</source>
         <translation>&amp;Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="416"/>
+        <location filename="../src/mainwin.cpp" line="420"/>
         <source>Setting reading speed of %1</source>
         <translation>Setze Lesegeschindigkeit von %1</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="482"/>
+        <location filename="../src/mainwin.cpp" line="486"/>
         <source>DSBMD just shut down</source>
         <translation>DSBMD hat seinen Dienst beendet</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="488"/>
+        <location filename="../src/mainwin.cpp" line="492"/>
         <source>Lost connection to DSBMD</source>
         <translation>Verbindung zu DSBMD verloren</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="510"/>
+        <location filename="../src/mainwin.cpp" line="514"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="520"/>
+        <location filename="../src/mainwin.cpp" line="524"/>
         <source>An error occured
 </source>
         <translation>Ein Fehler ist Aufgetreten
 </translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="521"/>
+        <location filename="../src/mainwin.cpp" line="525"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/mainwin.cpp" line="525"/>
+        <location filename="../src/mainwin.cpp" line="529"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
@@ -159,127 +159,127 @@
 <context>
     <name>Model</name>
     <message>
-        <location filename="../src/model.cpp" line="261"/>
+        <location filename="../src/model.cpp" line="264"/>
         <source>Device already mounted</source>
         <translation>Laufwerk bereits gemountet</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="262"/>
+        <location filename="../src/model.cpp" line="265"/>
         <source>Permission denied</source>
         <translation>Zugriff verweigert</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="263"/>
+        <location filename="../src/model.cpp" line="266"/>
         <source>Device not mounted</source>
         <translation>Laufwerk nicht gemountet</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="264"/>
+        <location filename="../src/model.cpp" line="267"/>
         <source>Device busy</source>
         <translation>Auf Laufwerk wird noch zugegriffen</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="265"/>
+        <location filename="../src/model.cpp" line="268"/>
         <source>No such device</source>
         <translation>Laufwerk nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="266"/>
+        <location filename="../src/model.cpp" line="269"/>
         <source>Device not ejectable</source>
         <translation>Medium kann nicht ausgeworfen werden</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="267"/>
+        <location filename="../src/model.cpp" line="270"/>
         <source>Unknown command</source>
         <translation>Unbekannter Befehl</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="268"/>
+        <location filename="../src/model.cpp" line="271"/>
         <source>Unknown option</source>
         <translation>Unbekannte Option</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="269"/>
+        <location filename="../src/model.cpp" line="272"/>
         <source>Syntax error</source>
         <translation>Syntax-Fehler</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="270"/>
+        <location filename="../src/model.cpp" line="273"/>
         <source>No media</source>
         <translation>Kein Medium</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="271"/>
+        <location filename="../src/model.cpp" line="274"/>
         <source>Unknown filesystem</source>
         <translation>Unbekanntes Dateisystem</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="272"/>
+        <location filename="../src/model.cpp" line="275"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="273"/>
+        <location filename="../src/model.cpp" line="276"/>
         <source>Mount command failed</source>
         <translation>Mount-Befehl gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="274"/>
+        <location filename="../src/model.cpp" line="277"/>
         <source>Invalid argument</source>
         <translation>Ungültiger Parameter</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="275"/>
+        <location filename="../src/model.cpp" line="278"/>
         <source>Max. number of connections reached</source>
         <translation>Anzahl maximaler Verbindungungen erreicht</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="276"/>
+        <location filename="../src/model.cpp" line="279"/>
         <source>Command string too long</source>
         <translation>Befehls-String zu lang</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="277"/>
+        <location filename="../src/model.cpp" line="280"/>
         <source>Invalid command string</source>
         <translation>Ungültiger Befehls-String</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="278"/>
+        <location filename="../src/model.cpp" line="281"/>
         <source>Timeout</source>
         <translation>Zeitüberschreitung</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="279"/>
+        <location filename="../src/model.cpp" line="282"/>
         <source>Not a regular file</source>
         <translation>Keine reguläre Datei</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="296"/>
+        <location filename="../src/model.cpp" line="299"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="300"/>
+        <location filename="../src/model.cpp" line="303"/>
         <source>Play</source>
         <translation>Abspielen</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="306"/>
+        <location filename="../src/model.cpp" line="309"/>
         <source>Mount</source>
         <translation>Einhängen</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="312"/>
+        <location filename="../src/model.cpp" line="315"/>
         <source>Unmount</source>
         <translation>Aushängen</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="316"/>
+        <location filename="../src/model.cpp" line="319"/>
         <source>Eject</source>
         <translation>Auswerfen</translation>
     </message>
     <message>
-        <location filename="../src/model.cpp" line="320"/>
+        <location filename="../src/model.cpp" line="323"/>
         <source>Set reading speed</source>
         <translation>Setze Lesegeschwindigkeit</translation>
     </message>
@@ -342,52 +342,57 @@
         <translation>Zeige Hauptfenster, wenn ein Gerät hinzugefügt worden ist</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="223"/>
+        <location filename="../src/preferences.cpp" line="203"/>
+        <source>Automatically mount devices</source>
+        <translation>Speichermedien automatisch einhängen</translation>
+    </message>
+    <message>
+        <location filename="../src/preferences.cpp" line="228"/>
         <source>Example: &lt;tt&gt;/dev/da0s1, EFISYS, /var/run/user/1001/gvfs&lt;/tt&gt;</source>
         <translation>Beispiel:&lt;tt&gt;/dev/da0s1, EFISYS, /var/run/user/1001/gvfs&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="254"/>
+        <location filename="../src/preferences.cpp" line="259"/>
         <source>Use %d and %m as placeholders for the device and mount point, respectively</source>
         <translation>Benutzen Sie %d und %m als Platzhalter für das Gerät, bzw. den Mount point</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="265"/>
+        <location filename="../src/preferences.cpp" line="270"/>
         <source>Filemanager:</source>
         <translation>Dateimanager:</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="269"/>
+        <location filename="../src/preferences.cpp" line="274"/>
         <source>Play DVDs with:</source>
         <translation>Spiele DVDs mit:</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="273"/>
+        <location filename="../src/preferences.cpp" line="278"/>
         <source>Play Audio CDs with:</source>
         <translation>Spiele Audio-CDs mit:</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="277"/>
+        <location filename="../src/preferences.cpp" line="282"/>
         <source>Play VCDs with:</source>
         <translation>Spiele VCDs mit:</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="281"/>
+        <location filename="../src/preferences.cpp" line="286"/>
         <source>Play SVCDs with:</source>
         <translation>Spiele SVCDs mit:</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="291"/>
+        <location filename="../src/preferences.cpp" line="296"/>
         <source>Autoplay</source>
         <translation>Automatisch abspielen</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="310"/>
+        <location filename="../src/preferences.cpp" line="315"/>
         <source>Open Image</source>
         <translation>Bilddatei öffnen</translation>
     </message>
     <message>
-        <location filename="../src/preferences.cpp" line="311"/>
+        <location filename="../src/preferences.cpp" line="316"/>
         <source>Image Files (*.png *.svg *.xpm)</source>
         <translation>Bilddateien (*.png *.svg *.xpm)</translation>
     </message>

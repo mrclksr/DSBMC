@@ -51,6 +51,7 @@ dsbcfg_vardef_t vardefs[] = {
   { "show_msgwin", DSBCFG_VAR_BOOLEAN, CFG_MSGWIN,      DSBCFG_VAL(true)     },
   { "popup",       DSBCFG_VAR_BOOLEAN, CFG_POPUP,       DSBCFG_VAL(false)    },
   { "hide_on_open",DSBCFG_VAR_BOOLEAN, CFG_HIDE_ON_OPEN,DSBCFG_VAL(true)     },
+  { "automount",   DSBCFG_VAR_BOOLEAN, CFG_AUTOMOUNT,   DSBCFG_VAL(false)    },
   { "ignore",      DSBCFG_VAR_STRINGS, CFG_HIDE,        DSBCFG_VAL((char **)NULL) },
   { "tray_theme",  DSBCFG_VAR_STRING,  CFG_TRAY_THEME,  DSBCFG_VAL((char *)0) }
 };
