@@ -352,6 +352,11 @@
         <translation>Beispiel:&lt;tt&gt;/dev/da0s1, EFISYS, /var/run/user/1001/gvfs&lt;/tt&gt;</translation>
     </message>
     <message>
+        <location filename="../src/preferences.cpp" line="230"/>
+        <source>A comma-separated list of device names, mount points, and volume IDs to ignore</source>
+        <translation>Eine kommagetrennte Liste von zu ignorierenden Gerätenamen, Mountpunkten und Volume-IDs</translation>
+    </message>
+    <message>
         <location filename="../src/preferences.cpp" line="259"/>
         <source>Use %d and %m as placeholders for the device and mount point, respectively</source>
         <translation>Benutzen Sie %d und %m als Platzhalter für das Gerät, bzw. den Mount point</translation>
