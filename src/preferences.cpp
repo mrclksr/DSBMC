@@ -227,8 +227,8 @@ QWidget *Preferences::generalSettingsTab()
 	ignBox->addWidget(ignore_edit);
 	ignBox->addWidget(new QLabel(tr("Example: <tt>/dev/da0s1, " \
 				        "EFISYS, /var/run/user/1001/gvfs</tt>")));
-	ignore_edit->setToolTip("A comma-separated list of device names, " \
-				"mount points, and volume IDs to ignore");
+	ignore_edit->setToolTip(tr("A comma-separated list of device names, " \
+				   "mount points, and volume IDs to ignore"));
 	ignGrp->setLayout(ignBox);
 
 	QString ignoreList;
