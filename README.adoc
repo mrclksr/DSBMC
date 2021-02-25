@@ -99,7 +99,7 @@ and make it permanent by adding the line `vfs.usermount=1` to
 
 This allows DSBMD to mount media as regular user, and it allows you to
 unmount devices you mounted without having special privileges. That is,
-you can unmount media using your file manager.
+you can unmount media using your filemanager.
 
 Finally, enable DSBMD in `/etc/rc.conf`, and start it
 
@@ -255,7 +255,7 @@ two ways to control the appearance of Qt5 applications:
 * <<qt5-style-plugins,Qt5-style-plugins>>
 
 [[kvantum]]
-=== qt5ct and the Kvantum theme engine
+=== qt5ct and the Kvantum Theme Engine
 
 ==== qt5ct
 
