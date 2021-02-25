@@ -53,7 +53,6 @@ private:
 	QFrame	*mkLine(void);
 private slots:
 	void	openIcon(void);
-	void	changeTheme(int index);
 private:
 	dsbcfg_t  *cfg;
 	QCheckBox *cdda_autoplay;

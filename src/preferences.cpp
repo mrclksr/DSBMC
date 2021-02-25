@@ -141,10 +141,13 @@ QString Preferences::quoteString(char *str)
 void Preferences::createThemeComboBox()
 {
 	themeBox	  = new QComboBox;
+	QString curTheme  = QIcon::themeName();
 	QStringList paths = QIcon::themeSearchPaths();
 	QStringList names;
 	QString themeName(dsbcfg_getval(cfg, CFG_TRAY_THEME).string);
 
+	if (themeName.isNull())
+		themeName = curTheme;
 	for (int i = 0; i < paths.size(); i++) {
 		QDirIterator it(paths.at(i));
 		while (it.hasNext()) {
@@ -168,18 +171,6 @@ void Preferences::createThemeComboBox()
 	int index = themeBox->findText(themeName, Qt::MatchExactly);
 	if (index != -1)
 		themeBox->setCurrentIndex(index);
-	connect(themeBox, SIGNAL(currentIndexChanged(int)), this,
-	    SLOT(changeTheme(int)));
-}
-
-void Preferences::changeTheme(int index)
-{
-	dsbcfg_val_t val;
-
-	if (index == -1)
-		return;
-	val.string = themeBox->currentText().toLatin1().data();
-	dsbcfg_setval(cfg, CFG_TRAY_THEME, val);
 }
 
 QWidget *Preferences::generalSettingsTab()
@@ -369,6 +360,9 @@ void Preferences::acceptSlot()
 
 	val.boolean = automount->checkState() == Qt::Checked ? true : false;
 	dsbcfg_setval(cfg, CFG_AUTOMOUNT, val);
+
+	val.string = themeBox->currentText().toLatin1().data();
+	dsbcfg_setval(cfg, CFG_TRAY_THEME, val);
 
 	storeList(ignore_edit->text());
 
