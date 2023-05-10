@@ -94,10 +94,12 @@ cleanup(int /* unused */)
 int
 main(int argc, char *argv[])
 {
-	int	      ch, error, fifo;
+	int	      ch, error, fifo, _argc;
 	bool	      iflag;
+	char	      **_argv;
 	struct passwd *pw;
 
+	_argc = argc; _argv = argv;
 	iflag = false;
 	while ((ch = getopt(argc, argv, "ih")) != -1) {
 		switch (ch) {
@@ -113,7 +115,7 @@ main(int argc, char *argv[])
 	argc -= optind;
 	argv += optind;
 
-	QApplication app(argc, argv);
+	QApplication app(_argc, _argv);
 	QTranslator translator;
 	/* Set application name and RESOURCE_NAME env to set WM_CLASS */
 	QApplication::setApplicationName(PROGRAM);
