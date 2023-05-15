@@ -60,21 +60,21 @@ Preferences::Preferences(dsbcfg_t *cfg, QWidget *parent) :
 
 void Preferences::storeList(QString str)
 {
-	int	     i, j;
+	int	     i;
 	bool	     esc, quote;
-	QString	     buf;
+	QString	     buf = "";
 	QStringList  list;
 	dsbcfg_val_t val;
 
 	quote = esc = false;
-	for (i = 0, j = 0; i < str.size(); i++) {
+	for (i = 0; i < str.size(); i++) {
 		if (str[i] == '"') {
 			if (!esc && !quote) {
 				quote = true;
 				continue;
 			}
 			if (esc) {
-				buf[j++] = '"';
+				buf.append('"');
 				esc = false;
 			} else
 				quote = false;
@@ -82,31 +82,28 @@ void Preferences::storeList(QString str)
 			if (!esc)
 				esc = true;
 			else {
-				buf[j++] = '\\';
+				buf.append('\\');
 				esc = false;
 			}
 		} else if (str[i] == ',' || str[i] == ' ') {
 			if (!esc && !quote) {
 				if (str[i] == ',') {
-					buf.resize(j); j = 0;
 					list.append(buf);
+					buf = "";
 				}
 				continue;
 			}
-			buf[j++] = str[i];
+			buf.append(str[i]);
 			if (esc)
 				esc = false;
 		} else {
 			if (esc)
 				esc = false;
-			buf[j++] = str[i];
-			buf.resize(j);
+			buf.append(str[i]);
 		}
 	}
-	if (j > 0) {
-		buf.resize(j);
+	if (buf != "")
 		list.append(buf);
-	}
 	if (list.count() == 0)
 		val.strings = NULL;
 	else {
@@ -125,15 +122,14 @@ void Preferences::storeList(QString str)
 
 QString Preferences::quoteString(char *str)
 {
-	int	i;
 	QString	buf = "\"";
 
-	for (i = 1; str != NULL && *str != '\0'; str++) {
+	for (; str != NULL && *str != '\0'; str++) {
 		if (*str == '"' || *str == '\\')
-			buf[i++] = '\\';
-		buf[i++] = *str;
+			buf.append('\\');
+		buf.append(*str);
 	}
-	buf[i++] = '"'; buf.resize(i);
+	buf.append('"');
 
 	return (buf);
 }
