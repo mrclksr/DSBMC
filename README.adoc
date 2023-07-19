@@ -26,14 +26,19 @@ image::images/mainwin.png[Main window]
 
 === Building from Source
 
-==== Dependencies
-
+==== Dependencies (Qt5)
+* https://www.freshports.org/devel/cmake[devel/cmake]
 * https://freshports.org/devel/qt5-buildtools[devel/qt5-buildtools]
 * https://freshports.org/devel/qt5-core[devel/qt5-core]
 * https://freshports.org/devel/qt5-linguisttools[devel/qt5-linguisttools]
 * https://freshports.org/devel/qt5-qmake[devel/qt5-qmake]
 * https://freshports.org/x11-toolkits/qt5-gui[x11-toolkits/qt5-gui]
 * https://freshports.org/x11-toolkits/qt5-widgets[x11-toolkits/qt5-widgets]
+
+==== Dependencies (Qt6)
+* https://www.freshports.org/devel/cmake[devel/cmake]
+* https://www.freshports.org/devel/qt6-base[devel/qt6-base]
+* https://www.freshports.org/devel/qt6-tools/[devel/qt6-tools]
 
 ==== Getting the Source Code
 
@@ -42,12 +47,24 @@ image::images/mainwin.png[Main window]
 % git clone https://github.com/mrclksr/DSBMC.git
 ----
 
-==== Building and Installation
+==== Building and Installing from Source (Qt5)
 
 [source,sh]
 ----
-# cd DSBMC && qmake
-# make && make install
+# cd DSBMC
+# cmake -S . -B build
+# cmake --build build
+# cmake --build build -t install
+----
+
+==== Building and Installing from Source (Qt6)
+
+[source,sh]
+----
+# cd DSBMC
+# cmake -D USE_QT6=ON -S . -B build
+# cmake --build build
+# cmake --build build -t install
 ----
 
 === Installing via _pkg(8)_
@@ -228,7 +245,7 @@ If a disk image is given, a *md(4)* device is created from it.
 
 ==== Instructions
 
-Let's say you want to add translations for Russian, you can proceed as follows:
+Let's say you want to add French translations, you can proceed as follows:
 
 . Create a fork of this repo, and clone it:
 +
@@ -236,13 +253,29 @@ Let's say you want to add translations for Russian, you can proceed as follows:
 ----
 % git clone url-of-your-fork
 ----
-. Install `devel/qt5-linguist` and `devel/qt5-linguisttools`
+. Install https://www.freshports.org/devel/qt5-linguist[devel/qt5-linguist]
 . `cd` to `your-forked-dsbmc-dir`
-. Add `locale/$${PROGRAM}_ru.ts` to `TRANSLATIONS` in `dsbmc.pro`.
-. Execute `lupdate dsbmc.pro`
-. Run `linguist locale/dsbmc_ru.ts`
-. Add the file to the repo: `git add locale/dsbmc_ru.ts`
-. Commit: `git commit -am 'Add Russian translations.'`
+. Add `locale/dsbmc_fr.ts` to the `TS_FILES` list in `CMakeLists.txt`.
+. In order to create the `dsbmc_fr.ts` file, run
++
+.Qt5
+[source,sh]
+----
+% cmake -S . -B build
+% cmake --build build
+----
++
+or
++
+.Qt6
+[source,sh]
+----
+% cmake -D USE_QT6=ON -S . -B build
+% cmake --build build -t dsbmc_lupdate
+----
+. Run `linguist locale/dsbmc_fr.ts`
+. Add the file to the repo: `git add locale/dsbmc_fr.ts`
+. Commit: `git commit -am 'Add French translations.'`
 . Send a pull request.
 
 [[look]]
