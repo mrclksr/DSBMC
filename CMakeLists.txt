@@ -31,8 +31,23 @@ else()
   set(CMAKE_AUTOUIC ON)
 endif()
 
-set(TS_FILES
-  locale/dsbmc_de.ts)
+set(TS_FILES locale/dsbmc_ar.ts
+             locale/dsbmc_cs.ts
+             locale/dsbmc_de.ts
+             locale/dsbmc_es.ts
+             locale/dsbmc_hi.ts
+             locale/dsbmc_hu.ts
+             locale/dsbmc_id.ts
+             locale/dsbmc_it.ts
+             locale/dsbmc_ja.ts
+             locale/dsbmc_ko.ts
+             locale/dsbmc_pl.ts
+             locale/dsbmc_pt.ts
+             locale/dsbmc_ru.ts
+             locale/dsbmc_tr.ts
+             locale/dsbmc_uk.ts
+             locale/dsbmc_zh.ts)
+
 
 if (NOT USE_QT6)
   qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
