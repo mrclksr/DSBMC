@@ -24,87 +24,89 @@
 
 #pragma once
 #include <QApplication>
-#include <QIcon>
-#include <QLabel>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QPushButton>
-#include <QMainWindow>
+#include <QIcon>
 #include <QItemSelection>
+#include <QLabel>
 #include <QListView>
-#include <QTimer>
+#include <QMainWindow>
+#include <QPushButton>
 #include <QStringList>
 #include <QSystemTrayIcon>
+#include <QTimer>
+#include <QVBoxLayout>
 
-#include "preferences.h"
 #include "model.h"
-
+#include "preferences.h"
 
 class MainWin : public QMainWindow {
-        Q_OBJECT
-public:
-	MainWin(int fifo, QWidget *parent = 0);
-	void	 closeEvent(QCloseEvent *event);
-	QMenu	 *menu();
-protected:
-	bool	 eventFilter(QObject *obj, QEvent *event);
-public slots:
-	void	 catchSelectionChanged(const QItemSelection &selected,
-			const QItemSelection &deselected);
-	void	 toggleWin(void);
-	void	 showConfigMenu(void);
-	void	 showContextMenu(QPoint pos);
-	void	 quit(void);
-	void	 resizeEvent(QResizeEvent *event);
-	void	 moveEvent(QMoveEvent *event);
-	void	 checkReply(int action, const dsbmc_dev_t *dev, int code);
-	void	 checkReply(int action, const dsbmc_dev_t *dev, int code,
-		     QString program);
-	void	 execAction(QAction *action);
-	void	 catchShutdown(void);
-	void	 catchLostConnection(void);
-private:
-	int	 setSpeedWin(const char *dev, int *speed);
-	int	 forceEjectWin(const char *dev);
-	void	 errWin(QString message);
-	void	 createMenuActions(void);
-	void	 createMainMenu(void);
-	void	 showSize(const dsbmc_dev_t *dev);
-	void	 setStatus(QString &msg);
-	void	 startBusyMessage(QString &msg);
-	void	 stopBusyMessage(void);
-	void	 setIconSize(QSize size);
-	void	 saveGeometry(void);
-	void	 createTrayIcon(void);
-	void	 loadTrayIconPic(void);
-	QString	 playCommand(const dsbmc_dev_t *dev);
-private slots:
-	void	 handleFIFO(int fifo);
-	void	 showDevAddedMsg(const char *devname);
-	void	 catchDeviceAdded(const dsbmc_dev_t *dev);
-	void	 checkForSysTray(void);
-	void	 updateBusyMessage(void);
-	void	 autoplay(const dsbmc_dev_t *dev);
-	void	 scrGeomChanged(const QRect &g);
-	void	 trayClicked(QSystemTrayIcon::ActivationReason reason);
-private:
-	int		spinnerCounter = 0;
-        int		*posX;
-        int		*posY;
-        int		*wWidth;
-        int		*hHeight;
-	QIcon		quitIcon;
-	QIcon		prefsIcon; 
-	QIcon		trayIconPic;
-	Model		*model;
-	QMenu		*mainMenu;
-	QLabel		*statusLabel;
-	QTimer		*trayTimer;
-	QTimer		*spinnerTimer = nullptr;
-	QString		spinnerMsg;
-	dsbcfg_t	*cfg;
-	QListView	*list;
-	QMessageBox	*msgBox;
-	QStringList	spinnerPhase = { "   ", ".  ", ".. ", "..." };
-	QSystemTrayIcon *trayIcon = 0;
+  Q_OBJECT
+ public:
+  MainWin(int fifo, QWidget *parent = 0);
+  void closeEvent(QCloseEvent *event);
+  QMenu *menu();
+
+ protected:
+  bool eventFilter(QObject *obj, QEvent *event);
+ public slots:
+  void catchSelectionChanged(const QItemSelection &selected,
+                             const QItemSelection &deselected);
+  void toggleWin(void);
+  void showConfigMenu(void);
+  void showContextMenu(QPoint pos);
+  void quit(void);
+  void resizeEvent(QResizeEvent *event);
+  void moveEvent(QMoveEvent *event);
+  void checkReply(int action, const dsbmc_dev_t *dev, int code);
+  void checkReply(int action, const dsbmc_dev_t *dev, int code,
+                  QString program);
+  void execAction(QAction *action);
+  void catchShutdown(void);
+  void catchLostConnection(void);
+
+ private:
+  int setSpeedWin(const char *dev, int *speed);
+  int forceEjectWin(const char *dev);
+  void errWin(QString message);
+  void createMenuActions(void);
+  void createMainMenu(void);
+  void showSize(const dsbmc_dev_t *dev);
+  void setStatus(QString &msg);
+  void startBusyMessage(QString &msg);
+  void stopBusyMessage(void);
+  void setIconSize(QSize size);
+  void saveGeometry(void);
+  void createTrayIcon(void);
+  void loadTrayIconPic(void);
+  QString playCommand(const dsbmc_dev_t *dev);
+ private slots:
+  void handleFIFO(int fifo);
+  void showDevAddedMsg(const char *devname);
+  void catchDeviceAdded(const dsbmc_dev_t *dev);
+  void checkForSysTray(void);
+  void updateBusyMessage(void);
+  void autoplay(const dsbmc_dev_t *dev);
+  void scrGeomChanged(const QRect &g);
+  void trayClicked(QSystemTrayIcon::ActivationReason reason);
+
+ private:
+  int spinnerCounter = 0;
+  int *posX;
+  int *posY;
+  int *wWidth;
+  int *hHeight;
+  QIcon quitIcon;
+  QIcon prefsIcon;
+  QIcon trayIconPic;
+  Model *model;
+  QMenu *mainMenu;
+  QLabel *statusLabel;
+  QTimer *trayTimer;
+  QTimer *spinnerTimer = nullptr;
+  QString spinnerMsg;
+  dsbcfg_t *cfg;
+  QListView *list;
+  QMessageBox *msgBox;
+  QStringList spinnerPhase = {"   ", ".  ", ".. ", "..."};
+  QSystemTrayIcon *trayIcon = 0;
 };

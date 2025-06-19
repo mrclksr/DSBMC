@@ -23,31 +23,31 @@
  */
 
 #pragma once
-#include <QThread>
 #include <QMutex>
+#include <QThread>
 
 #include "libdsbmc.h"
 
-class Thread : public QThread
-{
-	Q_OBJECT
-public:
-	Thread(QMutex *mutex, int command, dsbmc_t *handle,
-		const dsbmc_dev_t *dev,	bool force = false, int speed = 1,
-		QObject *parent = 0);
-	Thread(QMutex *mutex, int command, dsbmc_t *handle,
-		const dsbmc_dev_t *dev, QString program, QObject *parent = 0);
-signals:
-	void commandReturned(int, const dsbmc_dev_t *, int);
-	void commandReturned(int, const dsbmc_dev_t *, int, QString);
-protected:
-	void run();
-public:
-	int	speed;
-	int	command;
-	bool	force;
-	QMutex	*mutex;
-	dsbmc_t	*handle;
-	QString	program;
-	const dsbmc_dev_t *dev;
+class Thread : public QThread {
+  Q_OBJECT
+ public:
+  Thread(QMutex *mutex, int command, dsbmc_t *handle, const dsbmc_dev_t *dev,
+         bool force = false, int speed = 1, QObject *parent = 0);
+  Thread(QMutex *mutex, int command, dsbmc_t *handle, const dsbmc_dev_t *dev,
+         QString program, QObject *parent = 0);
+ signals:
+  void commandReturned(int, const dsbmc_dev_t *, int);
+  void commandReturned(int, const dsbmc_dev_t *, int, QString);
+
+ protected:
+  void run();
+
+ public:
+  int speed;
+  int command;
+  bool force;
+  QMutex *mutex;
+  dsbmc_t *handle;
+  QString program;
+  const dsbmc_dev_t *dev;
 };

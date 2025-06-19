@@ -23,52 +23,54 @@
  */
 
 #pragma once
-#include <QDialog>
-#include <QLabel>
-#include <QComboBox>
-#include <QFormLayout>
-#include <QLineEdit>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
 #include <QBoxLayout>
-#include <QWidget>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QDialog>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QTableWidget>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include "lib/config.h"
 
 class Preferences : public QDialog {
-	Q_OBJECT
-public:
-	Preferences(dsbcfg_t *cfg, QWidget *parent = 0);
-public slots:
-	void	acceptSlot();
-private:
-	void	storeList(QString str);
-	void	createThemeComboBox(void);
-	QString	quoteString(char *str);
-	QWidget *commandsTab(void);
-	QWidget *generalSettingsTab(void);
-	QFrame	*mkLine(void);
-private slots:
-	void	openIcon(void);
-private:
-	dsbcfg_t  *cfg;
-	QCheckBox *cdda_autoplay;
-	QCheckBox *svcd_autoplay;
-	QCheckBox *vcd_autoplay;
-	QCheckBox *dvd_autoplay;
-	QCheckBox *hideOnOpen;
-	QCheckBox *notify;
-	QCheckBox *popup;
-	QCheckBox *automount;
-	QComboBox *themeBox;
-	QLineEdit *fm_edit;
-	QLineEdit *dvd_edit;
-	QLineEdit *vcd_edit;
-	QLineEdit *cdda_edit;
-	QLineEdit *svcd_edit;
-	QLineEdit *ignore_edit;
-	QLineEdit *icon_edit;
+  Q_OBJECT
+ public:
+  Preferences(dsbcfg_t *cfg, QWidget *parent = 0);
+ public slots:
+  void acceptSlot();
+
+ private:
+  void storeList(QString str);
+  void createThemeComboBox(void);
+  QString quoteString(char *str);
+  QWidget *commandsTab(void);
+  QWidget *generalSettingsTab(void);
+  QFrame *mkLine(void);
+ private slots:
+  void openIcon(void);
+
+ private:
+  dsbcfg_t *cfg;
+  QCheckBox *cdda_autoplay;
+  QCheckBox *svcd_autoplay;
+  QCheckBox *vcd_autoplay;
+  QCheckBox *dvd_autoplay;
+  QCheckBox *hideOnOpen;
+  QCheckBox *notify;
+  QCheckBox *popup;
+  QCheckBox *automount;
+  QComboBox *themeBox;
+  QLineEdit *fm_edit;
+  QLineEdit *dvd_edit;
+  QLineEdit *vcd_edit;
+  QLineEdit *cdda_edit;
+  QLineEdit *svcd_edit;
+  QLineEdit *ignore_edit;
+  QLineEdit *icon_edit;
 };

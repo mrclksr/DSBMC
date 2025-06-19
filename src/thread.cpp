@@ -22,73 +22,69 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <QProcess>
+#include "thread.h"
+
 #include <errno.h>
 #include <paths.h>
 
-#include "thread.h"
+#include <QProcess>
 
-void
-Thread::run()
-{
-	int	 code;
-	QProcess proc;
+void Thread::run() {
+  int code;
+  QProcess proc;
 
-	switch (command) {
-	case DSBMC_CMD_OPEN:
-		if (!dev->mounted) {
-			if ((code = dsbmc_mount(handle, dev)) != 0)
-				break;
-		}
-	case DSBMC_CMD_PLAY:
-		program.replace("%d", dev->dev);
-		program.replace("%m", dev->mntpt != NULL ? dev->mntpt : "");
-		proc.start(_PATH_BSHELL, QStringList() << "-c" << program);
-		(void)proc.waitForStarted(-1);
-		if (proc.state() == QProcess::NotRunning)
-			code = errno;
-		else
-			code = 0;
-		emit commandReturned(command, dev, code, program);
-		proc.waitForFinished(-1);
-		quit();
-		return;
-	case DSBMC_CMD_MOUNT:
-		code = dsbmc_mount(handle, dev);
-		break;
-	case DSBMC_CMD_UNMOUNT:
-		code = dsbmc_unmount(handle, dev, force);
-		break;
-	case DSBMC_CMD_EJECT:
-		code = dsbmc_eject(handle, dev, force);
-		break;
-	case DSBMC_CMD_SPEED:
-		code = dsbmc_set_speed(handle, dev, speed);
-		break;
-	}
-	emit commandReturned(command, dev, code);
-	quit();
+  switch (command) {
+    case DSBMC_CMD_OPEN:
+      if (!dev->mounted) {
+        if ((code = dsbmc_mount(handle, dev)) != 0) break;
+      }
+    case DSBMC_CMD_PLAY:
+      program.replace("%d", dev->dev);
+      program.replace("%m", dev->mntpt != NULL ? dev->mntpt : "");
+      proc.start(_PATH_BSHELL, QStringList() << "-c" << program);
+      (void)proc.waitForStarted(-1);
+      if (proc.state() == QProcess::NotRunning)
+        code = errno;
+      else
+        code = 0;
+      emit commandReturned(command, dev, code, program);
+      proc.waitForFinished(-1);
+      quit();
+      return;
+    case DSBMC_CMD_MOUNT:
+      code = dsbmc_mount(handle, dev);
+      break;
+    case DSBMC_CMD_UNMOUNT:
+      code = dsbmc_unmount(handle, dev, force);
+      break;
+    case DSBMC_CMD_EJECT:
+      code = dsbmc_eject(handle, dev, force);
+      break;
+    case DSBMC_CMD_SPEED:
+      code = dsbmc_set_speed(handle, dev, speed);
+      break;
+  }
+  emit commandReturned(command, dev, code);
+  quit();
 }
 
 Thread::Thread(QMutex *mutex, int command, dsbmc_t *handle,
-	const dsbmc_dev_t *dev, bool force, int speed, QObject *parent)
-	: QThread(parent)
-{
-	this->command = command;
-	this->handle  = handle;
-	this->dev     = dev;
-	this->force   = force;
-	this->speed   = speed;
-	this->mutex   = mutex;
+               const dsbmc_dev_t *dev, bool force, int speed, QObject *parent)
+    : QThread(parent) {
+  this->command = command;
+  this->handle = handle;
+  this->dev = dev;
+  this->force = force;
+  this->speed = speed;
+  this->mutex = mutex;
 }
 
 Thread::Thread(QMutex *mutex, int command, dsbmc_t *handle,
-	const dsbmc_dev_t *dev, QString program, QObject *parent)
-	: QThread(parent)
-{
-	this->command = command;
-	this->handle  = handle;
-	this->dev     = dev;
-	this->program = program;
-	this->mutex   = mutex;
+               const dsbmc_dev_t *dev, QString program, QObject *parent)
+    : QThread(parent) {
+  this->command = command;
+  this->handle = handle;
+  this->dev = dev;
+  this->program = program;
+  this->mutex = mutex;
 }
